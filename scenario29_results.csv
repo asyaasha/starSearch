@@ -1,0 +1,13 @@
+d0,scan
+barrier,barrier,barrier,barrier,stars,stars,stars,barrier
+d0,thrust,1
+ok
+d0,steer,northwest
+ok
+d0,thrust,1
+ok
+d0,steer,south
+ok
+d0,thrust,1
+ok
+4,4,4,6

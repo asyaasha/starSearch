@@ -41,7 +41,6 @@ public class Database {
             i.printStackTrace();
         }
 
-        GridFSUploadStream uploadStream = null;
         ObjectId fileId = null;
         try {
             InputStream streamToUploadFrom = new FileInputStream(new File("simulation.ser"));
@@ -62,7 +61,7 @@ public class Database {
         if (myResult == null) {
             //Create new doc
             Document doc = new Document("user", USER_ID)
-                    .append("current_serialization", uploadStream.getObjectId().toHexString())
+                    .append("current_serialization", fileId.toHexString())
                     .append("previous_serialization", "N/A");
             collection.insertOne(doc);
 
