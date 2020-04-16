@@ -29,8 +29,7 @@ class FileParser {
     public void generateInstructions() {
 
         List<String> data = new ArrayList<>();
-        String basePath = new File("").getAbsolutePath();
-        basePath = basePath + "\\";
+        String basePath = new File("").getAbsolutePath() + File.separator;
 
         try {
             BufferedReader fileReader = new BufferedReader(new FileReader(basePath.concat(this.filePath)));
