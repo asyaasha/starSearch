@@ -22,6 +22,7 @@ public class Database {
 
     private MongoDatabase database;
     private GridFSBucket gridFSBucket;
+    private MongoCollection<Document> collection;
 
     public Database() {
         MongoClient mongoClient = MongoClients.create(
@@ -29,11 +30,13 @@ public class Database {
         );
         database = mongoClient.getDatabase(DATABASE_NAME);
         gridFSBucket = GridFSBuckets.create(database, SIMULATION_STATE_COLLECTION);
+        collection =  database.getCollection(SIMULATION_METADATA_COLLECTION);
     }
 
     public void saveAndUploadState(Simulation simulation, String userId) throws IOException {
         saveStateAsFile(simulation);
-        uploadStateAsFile(userId);
+        String snapshotId = uploadStateToBucket(userId);
+        addSnapshotToMetadata(userId, snapshotId);
     }
 
     private void saveStateAsFile(Simulation simulation) throws IOException {
@@ -44,7 +47,7 @@ public class Database {
         fileOut.close();
     }
 
-    private void uploadStateAsFile(String userId) throws FileNotFoundException {
+    private String uploadStateToBucket(String userId) throws FileNotFoundException {
         InputStream streamToUploadFrom = new FileInputStream(new File(LOCAL_STATE_FILE_NAME));
         GridFSUploadOptions options = new GridFSUploadOptions()
             .chunkSizeBytes(UPLOAD_SIZE)
@@ -52,15 +55,20 @@ public class Database {
 
         String snapshotFileName = userId + "_snapshot";
 
-        String snapshotId = gridFSBucket.uploadFromStream(snapshotFileName, streamToUploadFrom, options).toHexString();
+        ObjectId uploadedState = gridFSBucket.uploadFromStream(snapshotFileName, streamToUploadFrom, options);
+
+        String snapshotId = uploadedState.toHexString();
 
         System.out.println("The id of the uploaded file is: " + snapshotId);
 
-        MongoCollection<Document> collection = database.getCollection(SIMULATION_METADATA_COLLECTION);
+        return snapshotId;
+    }
 
+    private void addSnapshotToMetadata(String userId, String snapshotId) {
         Document userMetaData = collection.find(eq(USER_FIELD, userId)).first();
 
         ArrayList<String> snapshotIdList;
+
         //userId does not exist
         if (userMetaData == null) {
             snapshotIdList = new ArrayList<>();
@@ -82,9 +90,9 @@ public class Database {
         }
     }
 
-    public Simulation loadSimulationState(String userId) throws IOException {
+    public Simulation loadSimulationState(String userId, boolean loadPreviousState) throws IOException {
 
-        ObjectId fileId = getCurrentStateObjectId(userId);
+        ObjectId fileId = getStateObjectId(userId, loadPreviousState);
 
         FileOutputStream streamToDownloadTo = new FileOutputStream(LOCAL_STATE_FILE_NAME);
         gridFSBucket.downloadToStream(fileId, streamToDownloadTo);
@@ -105,12 +113,22 @@ public class Database {
         }
     }
 
-    private ObjectId getCurrentStateObjectId(String userId) {
-        MongoCollection<Document> collection = database.getCollection(SIMULATION_METADATA_COLLECTION);
+    private ObjectId getStateObjectId(String userId, boolean loadPreviousState) {
         Document metaData = collection.find(eq("user", userId)).first();
 
         ArrayList<String> snapshotIdList = (ArrayList<String>) metaData.get(SNAPSHOT_ID_FIELD);
         int snapshotIdIndex = (int) metaData.get(SNAPSHOT_ID_INDEX_FIELD);
+
+        if (loadPreviousState) {
+            if (snapshotIdList.size() <= 1 || snapshotIdIndex == 0) {
+                System.out.println("INVALID INPUT: Current state is already at the initial state.");
+            } else {
+                snapshotIdList.remove(snapshotIdList.size() - 1);
+                snapshotIdIndex -= 1;
+                collection.updateOne(eq(USER_FIELD, userId), new Document("$set", new Document(SNAPSHOT_ID_FIELD, snapshotIdList)));
+                collection.updateOne(eq(USER_FIELD, userId), new Document("$set", new Document(SNAPSHOT_ID_INDEX_FIELD, snapshotIdIndex)));
+            }
+        }
 
         return new ObjectId(snapshotIdList.get(snapshotIdIndex));
     }
