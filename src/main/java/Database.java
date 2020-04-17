@@ -1,113 +1,103 @@
 import com.mongodb.client.*;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.client.gridfs.GridFSDownloadStream;
-import com.mongodb.client.gridfs.GridFSUploadStream;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
-import org.bson.Document;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import org.bson.types.ObjectId;
 import static com.mongodb.client.model.Filters.*;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
-import javax.xml.crypto.Data;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 public class Database {
+    private final String DATABASE_NAME = "star_search";
+    private final String SIMULATION_METADATA_COLLECTION = "simulation_meta_data";
+    private final String SIMULATION_STATE_COLLECTION = "simulation_state";
+    private final String USER_FIELD = "user";
+    private final String SNAPSHOT_ID_FIELD = "snapshot_ids";
+    private final String SNAPSHOT_ID_INDEX_FIELD = "snapshot_id_index";
+
+    private final String LOCAL_STATE_FILE_NAME = "simulation.ser";
+    private final int UPLOAD_SIZE = 1024;
+
     private MongoDatabase database;
     private GridFSBucket gridFSBucket;
-    //FOR TESTING
-    String USER_ID = "008";
 
     public Database() {
         MongoClient mongoClient = MongoClients.create(
-                "mongodb+srv://admin_one:gdPXGf5dCVXR3zB@master-hhsfd.mongodb.net/test?retryWrites=true&w=majority");
-        database = mongoClient.getDatabase("star_search");
-        gridFSBucket = GridFSBuckets.create(database, "files");
+                "mongodb+srv://admin_one:gdPXGf5dCVXR3zB@master-hhsfd.mongodb.net/test?retryWrites=true&w=majority"
+        );
+        database = mongoClient.getDatabase(DATABASE_NAME);
+        gridFSBucket = GridFSBuckets.create(database, SIMULATION_STATE_COLLECTION);
     }
 
+    public void saveAndUploadState(Simulation simulation, String userId) throws IOException {
+        saveStateAsFile(simulation);
+        uploadStateAsFile(userId);
+    }
 
-    public void serializeAndExport(Simulation simulation) {
-        try {
-            FileOutputStream fileOut =
-                    new FileOutputStream("simulation.ser");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(simulation);
-            out.close();
-            fileOut.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
+    private void saveStateAsFile(Simulation simulation) throws IOException {
+        FileOutputStream fileOut = new FileOutputStream(LOCAL_STATE_FILE_NAME);
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(simulation);
+        out.close();
+        fileOut.close();
+    }
 
-        ObjectId fileId = null;
-        try {
-            InputStream streamToUploadFrom = new FileInputStream(new File("simulation.ser"));
-            GridFSUploadOptions options = new GridFSUploadOptions()
-                    .chunkSizeBytes(1024)
-                    .metadata(new Document("type", "presentation"));
+    private void uploadStateAsFile(String userId) throws FileNotFoundException {
+        InputStream streamToUploadFrom = new FileInputStream(new File(LOCAL_STATE_FILE_NAME));
+        GridFSUploadOptions options = new GridFSUploadOptions()
+            .chunkSizeBytes(UPLOAD_SIZE)
+            .metadata(new Document("type", "presentation"));
 
-            fileId = gridFSBucket.uploadFromStream("serial_" + USER_ID, streamToUploadFrom, options);
-            System.out.println("The fileId of the uploaded file is: " + fileId.toHexString());
-        } catch (Exception e) {
+        String snapshotFileName = userId + "_snapshot";
 
-        }
+        String snapshotId = gridFSBucket.uploadFromStream(snapshotFileName, streamToUploadFrom, options).toHexString();
 
-        MongoCollection<Document> collection = database.getCollection("star_file");
-        //Check if USER_ID exists already
+        System.out.println("The id of the uploaded file is: " + snapshotId);
 
-        Document myResult = collection.find(eq("user", USER_ID)).first();
-        if (myResult == null) {
+        MongoCollection<Document> collection = database.getCollection(SIMULATION_METADATA_COLLECTION);
+
+        Document userMetaData = collection.find(eq(USER_FIELD, userId)).first();
+
+        ArrayList<String> snapshotIdList;
+        //userId does not exist
+        if (userMetaData == null) {
+            snapshotIdList = new ArrayList<>();
+            snapshotIdList.add(snapshotId);
             //Create new doc
-            Document doc = new Document("user", USER_ID)
-                    .append("current_serialization", fileId.toHexString())
-                    .append("previous_serialization", "N/A");
+            Document doc = new Document(USER_FIELD, userId)
+                .append(SNAPSHOT_ID_FIELD, snapshotIdList)
+                .append(SNAPSHOT_ID_INDEX_FIELD, 0);
             collection.insertOne(doc);
-
         } else {
             //Update doc with curr and prev
-            String prev_id = (String) myResult.get("current_serialization");
-            collection.updateOne(eq("user", USER_ID), new Document("$set", new Document("current_serialization", fileId.toHexString())));
-            collection.updateOne(eq("user", USER_ID), new Document("$set", new Document("previous_serialization", prev_id)));
+            snapshotIdList = (ArrayList<String>) userMetaData.get(SNAPSHOT_ID_FIELD);
+            snapshotIdList.add(snapshotId);
+            int newIndex = (int) userMetaData.get(SNAPSHOT_ID_INDEX_FIELD);
+            newIndex += 1;
+
+            collection.updateOne(eq(USER_FIELD, userId), new Document("$set", new Document(SNAPSHOT_ID_FIELD, snapshotIdList)));
+            collection.updateOne(eq(USER_FIELD, userId), new Document("$set", new Document(SNAPSHOT_ID_INDEX_FIELD, newIndex)));
         }
     }
 
-    public ObjectId getCurrentDoc(String user) {
-        MongoCollection<Document> collection = database.getCollection("star_file");
-        Document myResult = collection.find(eq("user", USER_ID)).first();
-        ObjectId targetFile = new ObjectId((String) myResult.get("current_serialization"));
-        return targetFile;
-    }
+    public Simulation loadSimulationState(String userId) throws IOException {
 
-    public ObjectId getPrevDoc(String user) {
-        MongoCollection<Document> collection = database.getCollection("star_file");
-        Document myResult = collection.find(eq("user", USER_ID)).first();
-        ObjectId targetFile = new ObjectId((String) myResult.get("previous_serialization"));
-        return targetFile;
-    }
+        ObjectId fileId = getCurrentStateObjectId(userId);
 
-    public Simulation loadSerialization(ObjectId fileId) {
-
-        try {
-            FileOutputStream streamToDownloadTo = new FileOutputStream("simulation.ser");
-            gridFSBucket.downloadToStream(fileId, streamToDownloadTo);
-            streamToDownloadTo.close();
-        } catch (Exception e) {
-
-        }
+        FileOutputStream streamToDownloadTo = new FileOutputStream(LOCAL_STATE_FILE_NAME);
+        gridFSBucket.downloadToStream(fileId, streamToDownloadTo);
+        streamToDownloadTo.close();
 
         Simulation simulation;
         try {
-            FileInputStream fileIn = new FileInputStream("simulation.ser");
+            FileInputStream fileIn = new FileInputStream(LOCAL_STATE_FILE_NAME);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             simulation = (Simulation) in.readObject();
             in.close();
             fileIn.close();
             return simulation;
-        } catch (IOException i) {
-            i.printStackTrace();
-            return null;
         } catch (ClassNotFoundException c) {
             System.out.println("Serialized information not located");
             c.printStackTrace();
@@ -115,9 +105,13 @@ public class Database {
         }
     }
 
-    public static void main(String[] args) {
-//        Database db = new Database();
-//        db.serializeAndExport();
+    private ObjectId getCurrentStateObjectId(String userId) {
+        MongoCollection<Document> collection = database.getCollection(SIMULATION_METADATA_COLLECTION);
+        Document metaData = collection.find(eq("user", userId)).first();
 
+        ArrayList<String> snapshotIdList = (ArrayList<String>) metaData.get(SNAPSHOT_ID_FIELD);
+        int snapshotIdIndex = (int) metaData.get(SNAPSHOT_ID_INDEX_FIELD);
+
+        return new ObjectId(snapshotIdList.get(snapshotIdIndex));
     }
 }

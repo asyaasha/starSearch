@@ -1,5 +1,3 @@
-import javax.xml.crypto.Data;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,7 +10,12 @@ import java.util.HashMap;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        //FOR TESTING
+        final String USER_ID = "test-user-id";
+
+        String userId = USER_ID;
+
         String filePath = args[0];
 
         FileParser fileParser = new FileParser(filePath);
@@ -25,26 +28,19 @@ public class Main {
 
         Simulation simulation = new Simulation(globalInstructionSet);
         simulation.stepSimulation();
-        db.serializeAndExport(simulation);
-        simulation = null;
+        db.saveAndUploadState(simulation, userId);
 
-        simulation = db.loadSerialization(db.getCurrentDoc("N/A"));
+        simulation = db.loadSimulationState(userId);
 
         while (!simulation.status.equals("END_SIMULATION")) {
             simulation.stepSimulation();
-            db.serializeAndExport(simulation);
+            db.saveAndUploadState(simulation, userId);
 
-            simulation = null;
-            simulation = db.loadSerialization(db.getCurrentDoc("N/A"));
+            simulation = db.loadSimulationState(userId);
         }
-
 
         ArrayList<String> fullLog = simulation.endSimulation();
 
         fileParser.writeToFile(fullLog);
-
-
-
-
     }
 }
