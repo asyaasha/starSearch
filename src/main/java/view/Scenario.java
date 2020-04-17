@@ -103,8 +103,6 @@ public class Scenario {
 
     // HELPERS TO CHECK THAT INPUTS ARE VALID
     public Boolean checkRegion(int proposedWidth, int proposedHeight) {
-        System.out.println("proposedWidth" + proposedWidth);
-        System.out.println("proposedHeight" + proposedHeight);
        if (proposedWidth < MIN_SQ || proposedWidth > MAX_WIDTH || proposedHeight < MIN_SQ
                || proposedHeight > MAX_HEIGHT  ) {
            System.out.println("here");

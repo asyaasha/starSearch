@@ -1,42 +1,58 @@
 package controller;
 
+import model.Database;
+import model.FileParser;
+import model.Simulation;
 import view.MainMenuView;
 import view.Scenario;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 public class MainMenuController {
     private MainMenuView view;
     private FileManager fileManager;
+    private Database db;
 
     public MainMenuController(MainMenuView view) {
         this.view = view;
-        // model ..?
+        db = new Database();
     }
 
+    public void getStoredSim(String user) throws IOException {
+        Simulation sim = db.loadSimulationState(user, Boolean.TRUE);
+        view.setPrevSim(sim);
+    }
+    public Simulation getNewSimulation(String filename) {
+        FileParser fileParser = new FileParser(filename);
+        fileParser.generateInstructions();
+
+        HashMap<String, String[]> globalInstructionSet = fileParser.getInstructionSet();
+        return new Simulation(globalInstructionSet);
+    }
+    public Database getDb(){
+        return this.db;
+    }
     public void checkFileInput(String filename){
         fileManager = new FileManager(filename, new Scenario());
 
         // parse the file and check that all data is correct
-        Boolean isFileInput = fileManager.processFilePath();
-        Boolean isRegionInput = fileManager.processRegion();
-        Boolean isDronesInput = fileManager.processDrones();
-        Boolean isSunsInput = fileManager.processSuns();
-        Boolean isTurnsInput = fileManager.processTurns();
         Boolean isStrategyInput = Boolean.TRUE;
         String isLocationTaken = null;
-        System.out.println("Region " + isRegionInput);
-        if (!isFileInput){
+
+        if (!fileManager.processFilePath()){
             view.setMessage("The file path is incorrect, please try again");
         }
-        else if (!isRegionInput){
+        else if (!fileManager.processRegion()){
             view.setMessage("Region input is out of the bound width 1-20, height 1-15");
         }
-        else if (!isDronesInput){
+        else if (!fileManager.processDrones()){
             view.setMessage("Drones");
         }
-        else if (!isSunsInput){
+        else if (!fileManager.processSuns()){
             view.setMessage("Suns input is out of the bound");
         }
-        else if (!isTurnsInput){
+        else if (!fileManager.processTurns()){
             view.setMessage("Turns input is out of the bound 1-200");
         }
         else if (!isStrategyInput){

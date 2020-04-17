@@ -10,7 +10,7 @@ import java.util.*;
  * File Parser class that goes through the requested file and parses all pertinent information to pass to the model.Simulation
  */
 
-class FileParser {
+public class FileParser {
 
     private HashMap<String, String[]> instructionSet;
     private String filePath;

@@ -1,13 +1,19 @@
 package view;
-import model.Main;
+import controller.GamePlayController;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 
 public class GamePlayView extends JFrame implements ActionListener  {
+    private String commandNext = "NEXT";
+    private String commandBack = "BACK";
+    private String commandStop = "STOP";
+    private String commandForward = "FORWARD";
 
     private JButton[][] squares;
     private JButton btnBack;
@@ -17,11 +23,15 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private JPanel pnlGameControlls;
     private String filePath;
     private Scenario scenario;
+    private GamePlayController controller;
+    private Simulation sim;
+    private SpaceRegion baseMap;
 
-    // Currently passing file path and scenario from the previous screen, might need to be updated
-    public GamePlayView(String filePath, Scenario scenario){
+    public GamePlayView(Simulation sim, Database db, String user) throws IOException {
         super("Start Search");
-
+        controller = new GamePlayController(this, filePath, db, user);
+        this.sim = sim;
+        this.baseMap = sim.getBaseMap();
         this.filePath = filePath;
         // check the scenario class it has the configurations from the file input scenario stored
         this.scenario = scenario;
@@ -31,11 +41,17 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         // SPACE REGION PANEL  --> check the logic from simulation visualize function
         JPanel space = new JPanel();
-        space.setLayout(new GridLayout(scenario.getHeight(), scenario.getWidth()));
-        squares = new JButton[scenario.getWidth()][scenario.getHeight()];
+        space.setLayout(new GridLayout(sim.getBaseMap().getLength(), sim.getBaseMap().getWidth()));
+        squares = new JButton[sim.getBaseMap().getWidth()][sim.getBaseMap().getLength()];
+
+
         for(int y = 0; y < squares.length; y++) {
             for(int x = 0; x < squares[y].length; x++) {
-                squares[y][x] = new JButton("o");
+                if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                    squares[y][x] = new JButton("S");
+                } else {
+                    squares[y][x] = new JButton("o");
+                }
                 space.add(squares[y][x]);
             }
         }
@@ -45,28 +61,31 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         // TABLE PANEL TO DISPLAY PROGRESS
         pnlProgress = new JPanel();
-        pnlProgress.setLayout(new GridLayout(10, 2));
-        JLabel lblTable = new JLabel("Current progress..");
+        pnlProgress.setLayout(new GridLayout(10, 1));
+        JLabel lblTable = new JLabel("<html>Progress...<br/>Region size: <br/></html>");
+        JLabel lblTable1 = new JLabel(baseMap.getWidth() + " * " + baseMap.getLength());
+
         pnlProgress.add(lblTable);
+        pnlProgress.add(lblTable1);
         add(pnlProgress, BorderLayout.WEST);
 
         // GAME PLAY CONTROL PANEL
         pnlGameControlls = new JPanel();
         pnlGameControlls.setLayout(new GridLayout(1, 3));
 
-        btnBack = new JButton("STOP");
+        btnBack = new JButton(commandStop);
         btnBack.addActionListener((ActionListener) this);
         pnlGameControlls.add(btnBack);
 
-        btnBack = new JButton("BACK");
+        btnBack = new JButton(commandBack);
         btnBack.addActionListener((ActionListener) this);
         pnlGameControlls.add(btnBack);
 
-        btnStop = new JButton("NEXT");
+        btnStop = new JButton(commandNext);
         btnStop.addActionListener((ActionListener) this);
         pnlGameControlls.add(btnStop);
 
-        btnForward = new JButton("FORWARD");
+        btnForward = new JButton(commandForward);
         btnForward.addActionListener((ActionListener) this);
         pnlGameControlls.add(btnForward);
 
@@ -78,25 +97,38 @@ public class GamePlayView extends JFrame implements ActionListener  {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
-
+    public void setSimulation(Simulation sim){
+        this.sim = sim;
+    }
     public void actionPerformed(ActionEvent event) {
         String command = event.getActionCommand();
 
         System.out.println(command);
 
-        // Just for testing assigned running main to the NEXT button feel free to move it anywhere needed
-        if (command.equals("NEXT")) {
-            Main test = new Main();
-            String[] testPath = {filePath};
+        // Perform next step
+        if (command.equals(commandNext)) {
             try {
-                System.out.println("testPath");
-                System.out.println(testPath);
-                test.main(testPath);
+                controller.nextStep();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
+        if (command.equals(commandForward)) {
+            try {
+                controller.stepForward();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (command.equals(commandBack)) {
+            try {
+                controller.previousStep();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (command.equals(commandStop)) {
+        }
 
         revalidate();
     }

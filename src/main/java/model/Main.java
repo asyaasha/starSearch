@@ -19,8 +19,6 @@ public class Main {
         String userId = USER_ID;
 
         String filePath = args[0];
-        System.out.println("filePath");
-        System.out.println(filePath);
         FileParser fileParser = new FileParser(filePath);
         fileParser.generateInstructions();
 
@@ -35,12 +33,12 @@ public class Main {
 
         simulation = db.loadSimulationState(userId, false);
 
-        while (!simulation.status.equals("END_SIMULATION")) {
-            simulation.stepSimulation();
-            db.saveAndUploadState(simulation, userId);
-
-            simulation = db.loadSimulationState(userId, false);
-        }
+//        while (!simulation.status.equals("END_SIMULATION")) {
+//            simulation.stepSimulation();
+//            db.saveAndUploadState(simulation, userId);
+//
+//            simulation = db.loadSimulationState(userId, false);
+//        }
 
         ArrayList<String> fullLog = simulation.endSimulation();
 

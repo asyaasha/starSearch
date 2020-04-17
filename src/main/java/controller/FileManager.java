@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class FileManager {
 
     /**
-     * Created by Dennis Eddington uodated by Asiya
+     * Created by Dennis Eddington updated by Asiya
      *
      * File Parser class that goes through the requested file and parses all pertinent information to test the requirements and pass to a new instance of Scenario class
      */
@@ -38,9 +38,14 @@ public class FileManager {
      */
     public Boolean processFilePath() {
         data = new ArrayList<>();
-        String basePath = new File("").getAbsolutePath();
-        basePath = basePath + "\\";
 
+        System.out.println("HERE");
+        System.out.println(this.filePath.length() < 1);
+        System.out.println(this.filePath);
+
+        if (this.filePath.length() < 1) {
+            return Boolean.FALSE;
+        }
         try {
             BufferedReader fileReader = new BufferedReader(new FileReader(this.filePath));
             String row;
@@ -60,7 +65,7 @@ public class FileManager {
         int width = Integer.parseInt(data.get(0));
         int height = Integer.parseInt(data.get(1));
         Boolean isVaild = scenario.checkRegion(width, height);
-        System.out.println("isVaild" + isVaild);
+
         if (isVaild) {
             scenario.setRegion(width, height);
         }

@@ -25,6 +25,12 @@ public class Simulation implements java.io.Serializable {
         this.simulationSetup(instructionSet);
     }
 
+    public SpaceRegion getBaseMap() {
+        return this.baseMap;
+    }
+    public int getTurnLimit() {
+        return this.turnLimit;
+    }
     //GENERAL SIMULATION NOTE...... OBJECT COORDS DIFFER BY 1,1 FROM POSITION IN SPACEREGION
 
     /**

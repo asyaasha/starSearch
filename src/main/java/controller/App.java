@@ -1,13 +1,9 @@
 package controller;
 
-import view.GamePlayView;
 import view.LoginView;
-import view.MainFrame;
-import view.MainMenuView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 // Runner
 public class App {

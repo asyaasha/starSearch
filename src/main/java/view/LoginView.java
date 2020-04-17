@@ -1,10 +1,14 @@
 package view;
 
+import controller.App;
+import controller.LoginController;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class LoginView extends JFrame implements ActionListener {
 
@@ -13,10 +17,14 @@ public class LoginView extends JFrame implements ActionListener {
     private JButton btnSubmit;
     private MessageUtil msgUtil;
     private JLabel lblDisplayMessage;
+    private LoginController controller;
+    private String submitCommand = "SUBMIT";
+    private String successMessage = "SUCCESS!";
 
     public LoginView() {
         super("Start Search");
 
+        controller = new LoginController(this);
         setLayout(new FlowLayout());
 
         // message helper
@@ -34,7 +42,7 @@ public class LoginView extends JFrame implements ActionListener {
         lbEnter.setBackground(new Color(133, 185, 230));
         lbEnter.setOpaque(true);
         txtUsername = new JTextArea();
-        btnSubmit = new JButton("SUBMIT");
+        btnSubmit = new JButton(submitCommand);
         btnSubmit.setPreferredSize(new Dimension(60, 50));
         btnSubmit.addActionListener((ActionListener) this);
 
@@ -48,6 +56,7 @@ public class LoginView extends JFrame implements ActionListener {
 
         //revalidate();
 
+        // Set the frame configs
         setSize(1150, 750);
         getContentPane().setBackground(new Color(133, 185, 230));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,19 +65,25 @@ public class LoginView extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent event) {
         String command = event.getActionCommand();
-        System.out.println(command);
         String username = txtUsername.getText();
-        System.out.println(username);
-        // Check username against the database?.. pass it to the menu
-        if(command.equals("SUBMIT"))
+
+        if(command.equals(submitCommand))
         {
-            if (username.length() <1) {
-                msgUtil.setMessage("Enter the username please");
-            } else {
-                dispose();
+            controller.checkUsername(username);
+
+            if (lblDisplayMessage.getText().equals(successMessage)) {
                 // Play menu view 2
-                new MainMenuView(username);
+                try {
+                    dispose();
+                    new MainMenuView(username);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    public void setMessage(String message){
+        msgUtil.setMessage(message);
     }
 }
