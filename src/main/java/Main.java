@@ -30,13 +30,13 @@ public class Main {
         simulation.stepSimulation();
         db.saveAndUploadState(simulation, userId);
 
-        simulation = db.loadSimulationState(userId);
+        simulation = db.loadSimulationState(userId, false);
 
         while (!simulation.status.equals("END_SIMULATION")) {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, userId);
 
-            simulation = db.loadSimulationState(userId);
+            simulation = db.loadSimulationState(userId, false);
         }
 
         ArrayList<String> fullLog = simulation.endSimulation();
