@@ -1,7 +1,9 @@
+package model;
+
 /**
  * Created by Dennis Eddington
  *
- * Enumerated class that details the various types of Content that can be found in a StarField
+ * Enumerated class that details the various types of model.Content that can be found in a model.StarField
  */
 public enum Content implements java.io.Serializable {
     STARS,

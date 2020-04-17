@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Created by Dennis Eddington
  */

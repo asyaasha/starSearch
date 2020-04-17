@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 
 /**
@@ -58,7 +60,7 @@ public class SpaceRegion implements java.io.Serializable {
      */
     public void generateSpaceRegion(ArrayList<Drone> allDrones) {
 
-        //Account for Barrier padding
+        //Account for model.Barrier padding
         int modifiedWidth = width + 2;
         int modifiedLength = length + 2;
 
@@ -106,7 +108,7 @@ public class SpaceRegion implements java.io.Serializable {
 
     public void generateSpaceRegion(ArrayList<Drone> allDrones, String[] obstaclesList) {
 
-        //Account for Barrier padding
+        //Account for model.Barrier padding
         int modifiedWidth = width + 2;
         int modifiedLength = length + 2;
 

@@ -1,3 +1,5 @@
+package model;
+
 import com.mongodb.client.*;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;

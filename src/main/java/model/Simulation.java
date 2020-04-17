@@ -1,6 +1,7 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 /**
  * Created by Dennis Eddington
@@ -16,7 +17,7 @@ public class Simulation implements java.io.Serializable {
     public String status = "CONTINUE_SIMULATION";
 
     /**
-     * Constructor for Simulation class
+     * Constructor for model.Simulation class
      *
      * @param instructionSet
      */
@@ -46,7 +47,7 @@ public class Simulation implements java.io.Serializable {
         this.populateSpaceLayoutBase(width, length, obstacleList);
         this.populateSpaceLayoutVirtualized(width, length);
 
-        //Setup Coordinator
+        //Setup model.Coordinator
         activeCoordinator = new Coordinator(virtualizedMap);
 
         //Set turn limit
@@ -54,13 +55,13 @@ public class Simulation implements java.io.Serializable {
     }
 
     /**
-     * Step Simulation
+     * Step model.Simulation
      */
     public void stepSimulation() {
         if (!checkCompletionOfSimulation(baseMap, virtualizedMap) && !checkTurnCompletion()) {
             activeCoordinator.incrementLogs();
             for (Drone currDrone:activeDrones) {
-                //Verify Drone is still active
+                //Verify model.Drone is still active
                 int droneID = currDrone.getDroneID();
                 if (droneRecord.get(droneID) == DroneStatus.ACTIVE) {
                     //visualizeVirtualizedMap();
@@ -100,13 +101,13 @@ public class Simulation implements java.io.Serializable {
     }
 
     /**
-     * Begins the Simulation
+     * Begins the model.Simulation
      */
     public void runSimulation() {
         while (!checkCompletionOfSimulation(baseMap, virtualizedMap) && !checkTurnCompletion()) {
             activeCoordinator.incrementLogs();
             for (Drone currDrone:activeDrones) {
-                //Verify Drone is still active
+                //Verify model.Drone is still active
                 int droneID = currDrone.getDroneID();
                 if (droneRecord.get(droneID) == DroneStatus.ACTIVE) {
                     //visualizeVirtualizedMap();
@@ -149,7 +150,7 @@ public class Simulation implements java.io.Serializable {
                 Because of border padding for barrier we add 1 to both
                 EXAMPLE:
                 Assume ^ represents drone
-                Drone spec details drone should be at 2,2
+                model.Drone spec details drone should be at 2,2
                 Dims are 4x4 matrix
 
                 ---ORIG---
@@ -174,7 +175,7 @@ public class Simulation implements java.io.Serializable {
              */
 
     /**
-     * Setups the Drone List
+     * Setups the model.Drone List
      *
      * @param droneLocations
      */
@@ -311,7 +312,7 @@ public class Simulation implements java.io.Serializable {
     }
 
     /**
-     * Ends the Simulation and return String
+     * Ends the model.Simulation and return String
      */
     public ArrayList<String> endSimulation() {
         HashMap<String, String> simulationDetails = activeCoordinator.getLogBook().exportSummaryReport(this.virtualizedMap, this.baseMap);

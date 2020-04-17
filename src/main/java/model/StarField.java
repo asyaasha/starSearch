@@ -1,11 +1,10 @@
-import java.util.ArrayList;
-import java.util.HashSet;
+package model;
 
 /**
  * Created by Dennis Eddington
  *
- * This class represents the StarField object. This object serves as the representation for individual squares
- * comprising the Space Region in the Star Search Simulation.
+ * This class represents the model.StarField object. This object serves as the representation for individual squares
+ * comprising the Space Region in the model.Star Search model.Simulation.
  */
 public class StarField implements java.io.Serializable {
 
@@ -18,10 +17,10 @@ public class StarField implements java.io.Serializable {
 
 
     /**
-     * Constructor for the StarField Object
+     * Constructor for the model.StarField Object
      *
-     * @param x x coordinate for StarField
-     * @param y y coordinate for StarField
+     * @param x x coordinate for model.StarField
+     * @param y y coordinate for model.StarField
      */
     public StarField(int x, int y) {
         this.x = x;
@@ -32,9 +31,9 @@ public class StarField implements java.io.Serializable {
     }
 
     /**
-     * Obtains the X coordinate for the StarField
+     * Obtains the X coordinate for the model.StarField
      *
-     * This method is no longer a suitable way to acquire the coordinates for a StarField
+     * This method is no longer a suitable way to acquire the coordinates for a model.StarField
      *
      * @return Integer detailing X coordinate
      */
@@ -44,9 +43,9 @@ public class StarField implements java.io.Serializable {
     }
 
     /**
-     * Obtains the Y coordinate for the StarField
+     * Obtains the Y coordinate for the model.StarField
      *
-     * This method is no longer a suitable way to acquire the coordinates for a StarField.
+     * This method is no longer a suitable way to acquire the coordinates for a model.StarField.
      *
      * @return Integer detailing Y coordinate
      */
@@ -56,9 +55,9 @@ public class StarField implements java.io.Serializable {
     }
 
     /**
-     * Takes a Drone object and sets it as the occupant of the current StarField.
+     * Takes a model.Drone object and sets it as the occupant of the current model.StarField.
      *
-     * @param currentDrone Drone that should be added into this StarField
+     * @param currentDrone model.Drone that should be added into this model.StarField
      */
     public void setOccupantDrone(Drone currentDrone) {
         this.occupantDrone = currentDrone;
@@ -69,11 +68,11 @@ public class StarField implements java.io.Serializable {
     }
 
     /**
-     * Checks the current StarField to see whether or not it contains a Drone object.
+     * Checks the current model.StarField to see whether or not it contains a model.Drone object.
      *
-     * This method is no longer a suitable way check whether or not a Drone occupies a StarField.
+     * This method is no longer a suitable way check whether or not a model.Drone occupies a model.StarField.
      *
-     * @return Boolean value detailing whether or not there is a Drone in this StarField
+     * @return Boolean value detailing whether or not there is a model.Drone in this model.StarField
      */
     @Deprecated
     public boolean checkDroneOccupant() {
@@ -81,19 +80,19 @@ public class StarField implements java.io.Serializable {
     }
 
     /**
-     * Returns a reference to the Drone object that is contained in this StarField.
+     * Returns a reference to the model.Drone object that is contained in this model.StarField.
      *
-     * @return Returns a reference to the Drone that is currently occupying the StarField queried
+     * @return Returns a reference to the model.Drone that is currently occupying the model.StarField queried
      */
     public Drone getOccupantDrone() {
         return occupantDrone;
     }
 
     /**
-     * Used to initially wire obstacles and instantiate them as part of a given StarField upon creation. It is
-     * important to note that this method will also handle swapping the Content for you upon usage.
+     * Used to initially wire obstacles and instantiate them as part of a given model.StarField upon creation. It is
+     * important to note that this method will also handle swapping the model.Content for you upon usage.
      *
-     * @param obstacle The desired obstacle to add to the StarField
+     * @param obstacle The desired obstacle to add to the model.StarField
      */
     public void setOccupantObstacle(Obstacle obstacle) {
         this.occupantObstacle = obstacle;
@@ -122,19 +121,19 @@ public class StarField implements java.io.Serializable {
     }
 
     /**
-     * Returns the obstacle that is located inside of the current StarField. Values range from Star, Sun, Barrier.
+     * Returns the obstacle that is located inside of the current model.StarField. Values range from model.Star, model.Sun, model.Barrier.
      * Will return null value if space currently contains no obstacle.
      *
-     * @return  Returns the obstacle object that is placed in the StarField
+     * @return  Returns the obstacle object that is placed in the model.StarField
      */
     public Obstacle getOccupantObstacle() {
         return this.occupantObstacle;
     }
 
     /**
-     * Returns the Contents of the StarField. See Content Enumeration file in order to find the full list of values.
+     * Returns the Contents of the model.StarField. See model.Content Enumeration file in order to find the full list of values.
      *
-     * @return  Returns the Contents of the StarField
+     * @return  Returns the Contents of the model.StarField
      * @see Content
      */
     public Content getStarFieldContents() {
@@ -142,20 +141,20 @@ public class StarField implements java.io.Serializable {
     }
 
     /**
-     * Serves to update the Contents of the StarField. This method is utilized throughout various classes in order to
-     * Sync the content of the current (this._____) StarField with the contents of some other omniscient (baseMap).
+     * Serves to update the Contents of the model.StarField. This method is utilized throughout various classes in order to
+     * Sync the content of the current (this._____) model.StarField with the contents of some other omniscient (baseMap).
      *
      * @param discoveredContent Input content discovered from some external source to update the content of the
-     *                          currently explored StarField
+     *                          currently explored model.StarField
      */
     public void updateStarFieldContents(Content discoveredContent) {
         this.starFieldContents = discoveredContent;
     }
 
     /**
-     * Will return the current exploration status (whether or not the StarField has been explored).
+     * Will return the current exploration status (whether or not the model.StarField has been explored).
      *
-     * @return Boolean value that displays whether the StarField in question has been explored by a Drone or not
+     * @return Boolean value that displays whether the model.StarField in question has been explored by a model.Drone or not
      */
     public boolean getExplorationStatus() {
         return starFieldExplorationStatus;
