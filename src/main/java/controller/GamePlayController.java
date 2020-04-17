@@ -14,10 +14,11 @@ public class GamePlayController {
     private String user;
     private GamePlayView view;
 
-    public  GamePlayController(GamePlayView view, String filePath, Database db, String user) throws IOException {
+    public  GamePlayController(GamePlayView view, Database db, String user, Simulation simulation) throws IOException {
         this.db = db;
         this.user = user;
         this.view = view;
+        this.simulation = simulation;
     }
 
     public void nextStep() throws IOException {

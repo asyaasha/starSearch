@@ -26,15 +26,15 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private GamePlayController controller;
     private Simulation sim;
     private SpaceRegion baseMap;
+    private SpaceRegion virtualizedMap;
 
     public GamePlayView(Simulation sim, Database db, String user) throws IOException {
         super("Start Search");
-        controller = new GamePlayController(this, filePath, db, user);
+        controller = new GamePlayController(this, db, user, sim);
         this.sim = sim;
         this.baseMap = sim.getBaseMap();
-        this.filePath = filePath;
-        // check the scenario class it has the configurations from the file input scenario stored
-        this.scenario = scenario;
+        this.virtualizedMap = sim.getVirtualizedMapMap();
+
 
         // Setting the main layout type
         setLayout(new BorderLayout());
@@ -47,7 +47,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         for(int y = 0; y < squares.length; y++) {
             for(int x = 0; x < squares[y].length; x++) {
-                if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
                     squares[y][x] = new JButton("S");
                 } else {
                     squares[y][x] = new JButton("o");

@@ -28,6 +28,9 @@ public class Simulation implements java.io.Serializable {
     public SpaceRegion getBaseMap() {
         return this.baseMap;
     }
+    public SpaceRegion getVirtualizedMapMap() {
+        return this.virtualizedMap;
+    }
     public int getTurnLimit() {
         return this.turnLimit;
     }
