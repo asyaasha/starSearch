@@ -1,12 +1,9 @@
 package controller;
 
+import java.io.IOException;
 import model.Database;
-import model.FileParser;
 import model.Simulation;
 import view.GamePlayView;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 public class GamePlayController {
     private Simulation simulation;
@@ -22,10 +19,14 @@ public class GamePlayController {
     }
 
     public void nextStep() throws IOException {
-        simulation.stepSimulation();
-        db.saveAndUploadState(simulation, user);
-        simulation = db.loadSimulationState(user, false);
-        view.setSimulation(simulation);
+        if (!simulation.status.equals("END_SIMULATION")) {
+            simulation.stepSimulation();
+            db.saveAndUploadState(simulation, user);
+            simulation = db.loadSimulationState(user, false);
+            view.setSimulation(simulation);
+        } else {
+            System.out.println("ERROR: SIMULATION HAS ALREADY ENDED");
+        }
     }
 
     public void previousStep() throws IOException {
@@ -33,11 +34,16 @@ public class GamePlayController {
     }
 
     public void stepForward() throws IOException {
+        simulation = db.loadSimulationState(user, false);
+        System.out.println(simulation.status);
         while (!simulation.status.equals("END_SIMULATION")) {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, user);
-
             simulation = db.loadSimulationState(user, false);
         }
+    }
+
+    public void saveAndUpload() throws IOException {
+        db.saveAndUploadState(simulation, user);
     }
 }
