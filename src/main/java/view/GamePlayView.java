@@ -129,7 +129,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandStop)) {
             //save state and upload
             try {
-                controller.saveAndQuit();
+                controller.saveAndUpload();
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -72,13 +72,8 @@ public class LoginView extends JFrame implements ActionListener {
             controller.checkUsername(username);
 
             if (lblDisplayMessage.getText().equals(successMessage)) {
-                // Play menu view 2
-                try {
-                    dispose();
-                    new MainMenuView(username);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                dispose();
+                new MainMenuView(username);
             }
         }
     }

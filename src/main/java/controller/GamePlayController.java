@@ -1,12 +1,9 @@
 package controller;
 
+import java.io.IOException;
 import model.Database;
-import model.FileParser;
 import model.Simulation;
 import view.GamePlayView;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 public class GamePlayController {
     private Simulation simulation;
@@ -36,12 +33,11 @@ public class GamePlayController {
         while (!simulation.status.equals("END_SIMULATION")) {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, user);
-
             simulation = db.loadSimulationState(user, false);
         }
     }
 
-    public void saveAndQuit() throws IOException {
+    public void saveAndUpload() throws IOException {
         db.saveAndUploadState(simulation, user);
     }
 }

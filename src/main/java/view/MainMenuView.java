@@ -29,7 +29,7 @@ public class MainMenuView extends JFrame implements ActionListener {
     private JButton btnStart;
     private Simulation prevSim;
 
-    public MainMenuView(String user) throws IOException {
+    public MainMenuView(String user) {
         super("Start Search");
         this.username = user;
 
@@ -82,10 +82,11 @@ public class MainMenuView extends JFrame implements ActionListener {
         btnResume.setPreferredSize(new Dimension(60, 50));
         btnResume.setBackground(new Color(158, 178, 178));
 
-        if (prevSim != null) {
-            System.out.println("prevSim");
-            System.out.println(prevSim);
+        try {
+            controller.getStoredSim(username);
             btnResume.setEnabled(true);
+        } catch (Exception ex) {
+            System.out.println("USER NOT FOUND IN DB");
         }
 
         // Add widgets to layout
