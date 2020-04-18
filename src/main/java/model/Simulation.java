@@ -81,8 +81,6 @@ public class Simulation implements java.io.Serializable {
                 int droneID = currDrone.getDroneID();
 
                 if (droneRecord.get(droneID) == DroneStatus.ACTIVE) {
-                    System.out.println("droneID stepSimulation");
-                    System.out.println(droneID);
                     //visualizeVirtualizedMap();
                     String response = activeCoordinator.coordinateBestAction(currDrone, virtualizedMap, currDrone.getStrategy());
                     this.executeCoordinatorResponse(currDrone, response, baseMap, virtualizedMap);
