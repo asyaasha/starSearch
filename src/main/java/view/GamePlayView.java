@@ -25,6 +25,8 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private GamePlayController controller;
     private Simulation sim;
     private SpaceRegion baseMap;
+    private SpaceRegion virtualizedMap;
+    private JButton[][] squares;
 
     private JLabel lblAction;
     private JLabel lblDetail;
@@ -36,7 +38,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
         controller = new GamePlayController(this, db, user, sim);
         this.sim = sim;
         this.baseMap = sim.getBaseMap();
-        this.sim.visualizeVirtualizedMap();
+        //this.sim.visualizeVirtualizedMap();
+        this.virtualizedMap = sim.getVirtualizedMap();
+
         getContentPane().setVisible(false);
         getContentPane().setVisible(true);
         Border emptyBorder = BorderFactory.createEmptyBorder(40, 70, 20 , 70);
@@ -45,9 +49,32 @@ public class GamePlayView extends JFrame implements ActionListener  {
         setLayout(new BorderLayout());
 
         space = new JPanel();
+        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
+
         space.setBackground(new Color(133, 185, 230));
         space.setBorder(emptyBorder);
-        controller.renderMap(space);
+        //controller.renderInitialMap(space);
+        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
+        squares = new JButton[virtualizedMap.getLength() + 1][virtualizedMap.getWidth() + 1];
+
+        for(int y = 1; y < squares.length; y++) {
+            for(int x = 1; x < squares[1].length; x++) {
+                if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.BARRIER) {
+                    squares[y][x] = new JButton("B");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                    squares[y][x] = new JButton("D");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
+                    squares[y][x] = new JButton("");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
+                    squares[y][x] = new JButton("+");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
+                    squares[y][x] = new JButton("*");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
+                    squares[y][x] = new JButton("?");
+                }
+                space.add(squares[y][x]);
+            }
+        }
         add(space, BorderLayout.EAST);
 
         // TABLE PANEL TO DISPLAY PROGRESS
@@ -115,7 +142,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
             try {
                 controller.nextStep();
                 controller.setProgress(lblAction);
-                //controller.renderMap(space);
+                controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -123,7 +150,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandForward)) {
             try {
                 controller.stepForward();
-                //controller.renderMap(space);
+                controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -132,7 +159,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
             try {
                 controller.previousStep();
                 controller.setProgress(lblAction);
-                //controller.renderMap(space);
+                controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -141,7 +168,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
             //save state and upload
             try {
                 controller.saveAndUpload();
-                //controller.renderMap(space);
+                controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();
             }
