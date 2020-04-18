@@ -92,7 +92,10 @@ public class GamePlayView extends JFrame implements ActionListener  {
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
                     squares[y][x] = new JButton("+");
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
-                    squares[y][x] = new JButton("*");
+                    JButton button = new JButton();
+                    button.setIcon(imgSun);
+                    button.setText("");
+                    squares[y][x] = button;
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
                     squares[y][x] = new JButton("?");
                 }
