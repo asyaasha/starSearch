@@ -32,8 +32,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
         super("Start Search");
         controller = new GamePlayController(this, db, user, sim);
         this.sim = sim;
-        this.baseMap = sim.getBaseMap();
-        this.virtualizedMap = sim.getVirtualizedMapMap();
+        this.baseMap = this.sim.getBaseMap();
+        this.sim.visualizeVirtualizedMap();
+        this.virtualizedMap = this.sim.getVirtualizedMap();
 
 
         // Setting the main layout type
@@ -41,13 +42,13 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         // SPACE REGION PANEL  --> check the logic from simulation visualize function
         JPanel space = new JPanel();
-        space.setLayout(new GridLayout(sim.getBaseMap().getLength(), sim.getBaseMap().getWidth()));
-        squares = new JButton[sim.getBaseMap().getWidth()][sim.getBaseMap().getLength()];
+        space.setLayout(new GridLayout(this.virtualizedMap.getLength(), this.virtualizedMap.getWidth()));
+        squares = new JButton[this.virtualizedMap.getWidth()][this.virtualizedMap.getLength()];
 
 
         for(int y = 0; y < squares.length; y++) {
             for(int x = 0; x < squares[y].length; x++) {
-                if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
+                if (this.virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
                     squares[y][x] = new JButton("S");
                 } else {
                     squares[y][x] = new JButton("o");
