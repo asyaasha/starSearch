@@ -32,9 +32,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
         super("Start Search");
         controller = new GamePlayController(this, db, user, sim);
         this.sim = sim;
-        this.baseMap = this.sim.getBaseMap();
+        this.baseMap = sim.getBaseMap();
         this.sim.visualizeVirtualizedMap();
-        this.virtualizedMap = this.sim.getVirtualizedMap();
+        this.virtualizedMap = sim.getVirtualizedMap();
 
         // Setting the main layout type
         setLayout(new BorderLayout());
@@ -59,7 +59,6 @@ public class GamePlayView extends JFrame implements ActionListener  {
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
                     squares[y][x] = new JButton("X");
                 }
-
                 space.add(squares[y][x]);
             }
         }
