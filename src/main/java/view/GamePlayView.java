@@ -35,7 +35,6 @@ public class GamePlayView extends JFrame implements ActionListener  {
         this.baseMap = sim.getBaseMap();
         this.virtualizedMap = sim.getVirtualizedMapMap();
 
-
         // Setting the main layout type
         setLayout(new BorderLayout());
 
@@ -128,6 +127,15 @@ public class GamePlayView extends JFrame implements ActionListener  {
             }
         }
         if (command.equals(commandStop)) {
+            //save state and upload
+            try {
+                controller.saveAndQuit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //close window and open login
+            dispose();
+            new LoginView();
         }
 
         revalidate();

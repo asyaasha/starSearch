@@ -37,8 +37,7 @@ public class Database {
 
     public void saveAndUploadState(Simulation simulation, String userId) throws IOException {
         saveStateAsFile(simulation);
-        String snapshotId = uploadStateToBucket(userId);
-        addSnapshotToMetadata(userId, snapshotId);
+        uploadStateToBucket(userId);
     }
 
     private void saveStateAsFile(Simulation simulation) throws IOException {
@@ -49,24 +48,28 @@ public class Database {
         fileOut.close();
     }
 
-    private String uploadStateToBucket(String userId) throws FileNotFoundException {
-        InputStream streamToUploadFrom = new FileInputStream(new File(LOCAL_STATE_FILE_NAME));
-        GridFSUploadOptions options = new GridFSUploadOptions()
-            .chunkSizeBytes(UPLOAD_SIZE)
-            .metadata(new Document("type", "presentation"));
+    private void uploadStateToBucket(String userId) {
+        try {
+            InputStream streamToUploadFrom = new FileInputStream(new File(LOCAL_STATE_FILE_NAME));
 
-        String snapshotFileName = userId + "_snapshot";
+            GridFSUploadOptions options = new GridFSUploadOptions()
+                .chunkSizeBytes(UPLOAD_SIZE)
+                .metadata(new Document("type", "presentation"));
 
-        ObjectId uploadedState = gridFSBucket.uploadFromStream(snapshotFileName, streamToUploadFrom, options);
+            String snapshotFileName = userId + "_snapshot";
 
-        String snapshotId = uploadedState.toHexString();
+            ObjectId uploadedState = gridFSBucket.uploadFromStream(snapshotFileName, streamToUploadFrom, options);
 
-        System.out.println("The id of the uploaded file is: " + snapshotId);
+            String snapshotId = uploadedState.toHexString();
 
-        return snapshotId;
+            System.out.println("The id of the uploaded file is: " + snapshotId);
+
+            uploadSnapshotToMetadata(userId, snapshotId);
+
+        } catch (Exception ignored) {}
     }
 
-    private void addSnapshotToMetadata(String userId, String snapshotId) {
+    private void uploadSnapshotToMetadata(String userId, String snapshotId) {
         Document userMetaData = collection.find(eq(USER_FIELD, userId)).first();
 
         ArrayList<String> snapshotIdList;
@@ -115,11 +118,17 @@ public class Database {
         }
     }
 
-    private ObjectId getStateObjectId(String userId, boolean loadPreviousState) {
+    private ObjectId getStateObjectId(String userId, boolean loadPreviousState) throws IllegalArgumentException {
         // ADD NULL CASE HANDLING
         Document metaData = collection.find(eq("user", userId)).first();
 
-        ArrayList<String> snapshotIdList = (ArrayList<String>) metaData.get(SNAPSHOT_ID_FIELD);
+        ArrayList<String> snapshotIdList;
+        try {
+            snapshotIdList = (ArrayList<String>) metaData.get(SNAPSHOT_ID_FIELD);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(String.format("User Not Found: User id = %s is not found", userId));
+        }
+
         int snapshotIdIndex = (int) metaData.get(SNAPSHOT_ID_INDEX_FIELD);
 
         if (loadPreviousState) {
