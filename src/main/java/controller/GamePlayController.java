@@ -56,30 +56,6 @@ public class GamePlayController {
     public void saveAndUpload() throws IOException {
         db.saveAndUploadState(simulation, user);
     }
-//
-//    public void renderInitialMap(JPanel space){
-//        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
-//        squares = new JButton[virtualizedMap.getLength() + 1][virtualizedMap.getWidth() + 1];
-//
-//        for(int y = 1; y < squares.length; y++) {
-//            for(int x = 1; x < squares[1].length; x++) {
-//                if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.BARRIER) {
-//                    squares[y][x] = new JButton("B");
-//                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
-//                    squares[y][x] = new JButton(String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
-//                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
-//                    squares[y][x] = new JButton("");
-//                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
-//                    squares[y][x] = new JButton("+");
-//                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
-//                    squares[y][x] = new JButton("*");
-//                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
-//                    squares[y][x] = new JButton("?");
-//                }
-//                space.add(squares[y][x]);
-//            }
-//        }
-//    }
 
     public void renderMap(JButton[][] squares){
         for(int y = 1; y < squares.length; y++) {
