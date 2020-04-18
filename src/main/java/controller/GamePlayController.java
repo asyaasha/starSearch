@@ -18,9 +18,7 @@ public class GamePlayController {
     private Database db;
     private String user;
     private GamePlayView view;
-    private JButton[][] squares;
-    private SpaceRegion virtualizedMap;
-
+    //private SpaceRegion virtualizedMap;
 
     public  GamePlayController(GamePlayView view, Database db, String user, Simulation simulation) throws IOException {
         this.db = db;
@@ -28,7 +26,7 @@ public class GamePlayController {
         this.view = view;
         this.simulation = simulation;
         this.simulation.visualizeVirtualizedMap();
-        this.virtualizedMap = simulation.getVirtualizedMap();
+        //this.virtualizedMap = simulation.getVirtualizedMap();
     }
 
     public void nextStep() throws IOException {
@@ -60,10 +58,7 @@ public class GamePlayController {
         db.saveAndUploadState(simulation, user);
     }
 
-    public void renderInitialMap(JPanel space){
-        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
-        squares = new JButton[virtualizedMap.getLength() + 1][virtualizedMap.getWidth() + 1];
-
+    public void renderInitialMap(JPanel space, JButton[][] squares, SpaceRegion virtualizedMap){
         for(int y = 1; y < squares.length; y++) {
             for(int x = 1; x < squares[1].length; x++) {
                 if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.BARRIER) {
@@ -84,8 +79,8 @@ public class GamePlayController {
         }
     }
 
-    public void renderMap(JPanel space){
-        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
+    public void renderMap(JPanel space, JButton[][] squares, SpaceRegion virtualizedMap){
+        //space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
         //squares = new JButton[virtualizedMap.getLength() + 1][virtualizedMap.getWidth() + 1];
 
         for(int y = 1; y < squares.length; y++) {

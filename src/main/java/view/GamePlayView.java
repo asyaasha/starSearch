@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import static com.sun.javafx.fxml.expression.Expression.add;
-
 
 public class GamePlayView extends JFrame implements ActionListener  {
     private String commandNext = "NEXT";
@@ -23,9 +21,11 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private JPanel pnlProgress;
     private JPanel pnlGameControlls;
     private JPanel space = new JPanel();
+    private JButton[][] squares;
     private GamePlayController controller;
     private Simulation sim;
     private SpaceRegion baseMap;
+    private SpaceRegion virtualizedMap;
 
     public GamePlayView(Simulation sim, Database db, String user) throws IOException {
         super("Start Search");
@@ -33,10 +33,13 @@ public class GamePlayView extends JFrame implements ActionListener  {
         this.sim = sim;
         this.baseMap = sim.getBaseMap();
         this.sim.visualizeVirtualizedMap();
+        this.virtualizedMap = sim.getVirtualizedMap();
 
         // Setting the main layout type
         setLayout(new BorderLayout());
-        controller.renderInitialMap(space);
+        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
+        squares = new JButton[virtualizedMap.getLength() + 1][virtualizedMap.getWidth() + 1];
+        controller.renderInitialMap(space, squares, virtualizedMap);
         add(space, BorderLayout.EAST);
 
         // TABLE PANEL TO DISPLAY PROGRESS
@@ -78,6 +81,11 @@ public class GamePlayView extends JFrame implements ActionListener  {
         setVisible(true);
     }
 
+    //Calls updateUI on all sub-components of the JFrame
+    private void updateUI(){ 
+        SwingUtilities.updateComponentTreeUI(this); 
+    }
+
     public void setSimulation(Simulation sim){
         this.sim = sim;
     }
@@ -91,7 +99,8 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandNext)) {
             try {
                 controller.nextStep();
-                controller.renderMap(space);
+                controller.renderMap(space, squares, virtualizedMap);
+                space.updateUI();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -99,7 +108,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandForward)) {
             try {
                 controller.stepForward();
-                controller.renderMap(space);
+                controller.renderMap(space, squares, virtualizedMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -107,7 +116,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandBack)) {
             try {
                 controller.previousStep();
-                controller.renderMap(space);
+                controller.renderMap(space, squares, virtualizedMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -116,7 +125,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
             //save state and upload
             try {
                 controller.saveAndUpload();
-                controller.renderMap(space);
+                controller.renderMap(space, squares, virtualizedMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
