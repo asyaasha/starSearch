@@ -3,13 +3,12 @@ import controller.GamePlayController;
 import model.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
-import static com.sun.javafx.fxml.expression.Expression.add;
-
 
 public class GamePlayView extends JFrame implements ActionListener  {
     private String commandNext = "NEXT";
@@ -22,10 +21,15 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private JButton btnForward;
     private JPanel pnlProgress;
     private JPanel pnlGameControlls;
-    private JPanel space = new JPanel();
+    private JPanel space;
     private GamePlayController controller;
     private Simulation sim;
     private SpaceRegion baseMap;
+
+    private JLabel lblAction;
+    private JLabel lblDetail;
+    private JLabel lblDrone;
+    private JLabel lbStatus;
 
     public GamePlayView(Simulation sim, Database db, String user) throws IOException {
         super("Start Search");
@@ -33,24 +37,38 @@ public class GamePlayView extends JFrame implements ActionListener  {
         this.sim = sim;
         this.baseMap = sim.getBaseMap();
         this.sim.visualizeVirtualizedMap();
+        getContentPane().setVisible(false);
+        getContentPane().setVisible(true);
+        Border emptyBorder = BorderFactory.createEmptyBorder(40, 70, 20 , 70);
 
         // Setting the main layout type
         setLayout(new BorderLayout());
+
+        space = new JPanel();
+        space.setBackground(new Color(133, 185, 230));
+        space.setBorder(emptyBorder);
         controller.renderMap(space);
         add(space, BorderLayout.EAST);
 
         // TABLE PANEL TO DISPLAY PROGRESS
         pnlProgress = new JPanel();
+        pnlProgress.setBorder(emptyBorder);
+        pnlProgress.setBackground(new Color(133, 185, 230));
         pnlProgress.setLayout(new GridLayout(10, 1));
-        JLabel lblTable = new JLabel("<html>Progress...<br/>Region size: <br/></html>");
-        JLabel lblTable1 = new JLabel(baseMap.getWidth() + " * " + baseMap.getLength());
 
-        pnlProgress.add(lblTable);
-        pnlProgress.add(lblTable1);
+        JLabel lblTitle = new JLabel("--- CURRENT PROGRESS --- ");
+
+        lblAction = new JLabel("");
+        pnlProgress.add(lblTitle);
+        pnlProgress.add(lblAction);
+        controller.setProgress(lblAction);
+
         add(pnlProgress, BorderLayout.WEST);
 
         // GAME PLAY CONTROL PANEL
         pnlGameControlls = new JPanel();
+        pnlGameControlls.setBackground(new Color(158, 178, 178));
+        pnlGameControlls.setBorder(emptyBorder);
         pnlGameControlls.setLayout(new GridLayout(1, 3));
 
         btnBack = new JButton(commandStop);
@@ -74,6 +92,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         revalidate();
 
         setSize(1150, 750);
+        getContentPane().setBackground(new Color(133, 185, 230));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
@@ -82,15 +101,20 @@ public class GamePlayView extends JFrame implements ActionListener  {
         this.sim = sim;
     }
 
+    /* Calls updateUI on all sub-components of the JFrame */
+    private void updateUI() {
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
     public void actionPerformed(ActionEvent event) {
         String command = event.getActionCommand();
-
         System.out.println(command);
 
         // Perform next step
         if (command.equals(commandNext)) {
             try {
                 controller.nextStep();
+                controller.setProgress(lblAction);
                 controller.renderMap(space);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -107,6 +131,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandBack)) {
             try {
                 controller.previousStep();
+                controller.setProgress(lblAction);
                 controller.renderMap(space);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -11,8 +11,6 @@ import view.GamePlayView;
 
 import javax.swing.*;
 
-import static com.sun.javafx.fxml.expression.Expression.add;
-
 public class GamePlayController {
     private Simulation simulation;
     private Database db;
@@ -82,5 +80,17 @@ public class GamePlayController {
                 space.add(squares[y][x]);
             }
         }
+    }
+
+
+    public void setProgress(JLabel lblAction){
+        // Action
+        String row = "";
+
+        for (int i = 0; i< simulation.getStepProgress().size(); i++) {
+            row += simulation.getStepProgress().get(i) + "<br/>";
+        }
+        String progressFull = "<html>" + row + "<html>";
+        lblAction.setText(progressFull);
     }
 }
