@@ -99,6 +99,8 @@ public class Database {
 
         ObjectId fileId = getStateObjectId(userId, loadPreviousState);
 
+        System.out.println(String.format("The id of the downloaded file is: %s", fileId.toHexString()));
+
         FileOutputStream streamToDownloadTo = new FileOutputStream(LOCAL_STATE_FILE_NAME);
         gridFSBucket.downloadToStream(fileId, streamToDownloadTo);
         streamToDownloadTo.close();
