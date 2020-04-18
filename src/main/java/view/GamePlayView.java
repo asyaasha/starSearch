@@ -115,7 +115,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
             try {
                 controller.nextStep();
                 controller.setProgress(lblAction);
-                controller.renderMap(space);
+                //controller.renderMap(space);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -123,7 +123,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandForward)) {
             try {
                 controller.stepForward();
-                controller.renderMap(space);
+                //controller.renderMap(space);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -132,7 +132,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
             try {
                 controller.previousStep();
                 controller.setProgress(lblAction);
-                controller.renderMap(space);
+                //controller.renderMap(space);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -141,7 +141,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
             //save state and upload
             try {
                 controller.saveAndUpload();
-                controller.renderMap(space);
+                //controller.renderMap(space);
             } catch (Exception e) {
                 e.printStackTrace();
             }
