@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,25 +19,25 @@ public class Log implements java.io.Serializable {
     private int turns;
 
     /**
-     * Constructor for Log
+     * Constructor for model.Log
      */
     public Log() {
         this.summaryReport = new HashMap<>();
     }
 
     /**
-     * Method that simply increments the total number of turns executed within the Star Search Simulation
+     * Method that simply increments the total number of turns executed within the model.Star Search model.Simulation
      */
     public void incrementTurn() {
         this.turns = this.turns + 1;
     }
 
     /**
-     * Method called in order to aggregate data inside of Log class and then export it to console for further analysis
+     * Method called in order to aggregate data inside of model.Log class and then export it to console for further analysis
      *
-     * @param virtualizedMap A copy of the SpaceRegion detailing the virtualizedMap (Map observable by Drones)
-     * @param baseMap A copy of the SpaceRegion detailing the baseMap (Fully revealed Map)
-     * @return Returns a HashMap<String, String> containing the data aggregated by the Log and it's inputs
+     * @param virtualizedMap A copy of the model.SpaceRegion detailing the virtualizedMap (Map observable by Drones)
+     * @param baseMap A copy of the model.SpaceRegion detailing the baseMap (Fully revealed Map)
+     * @return Returns a HashMap<String, String> containing the data aggregated by the model.Log and it's inputs
      */
     public HashMap<String, String> exportSummaryReport(SpaceRegion virtualizedMap, SpaceRegion baseMap) {
 
@@ -74,7 +76,7 @@ public class Log implements java.io.Serializable {
     /**
      * Retrieves number of turns as captured by Logging
      *
-     * @return Integer tracking the number of turns the Log has successfully recorded
+     * @return Integer tracking the number of turns the model.Log has successfully recorded
      */
     public int getTurns() {
         return this.turns;

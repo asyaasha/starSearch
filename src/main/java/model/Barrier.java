@@ -1,7 +1,9 @@
+package model;
+
 /**
  * Created by Dennis Eddington
  *
- * Class extending Obstacle class that represents a type of Obstacle - Barriers
+ * Class extending model.Obstacle class that represents a type of model.Obstacle - Barriers
  */
 public class Barrier extends Obstacle implements java.io.Serializable {
 
@@ -10,9 +12,9 @@ public class Barrier extends Obstacle implements java.io.Serializable {
     private int obstacleY;
 
     /**
-     * Constructor for Barrier object
-     * @param x x coordinate of Barrier
-     * @param y y coordinate of Barrier
+     * Constructor for model.Barrier object
+     * @param x x coordinate of model.Barrier
+     * @param y y coordinate of model.Barrier
      */
     public Barrier(int x, int y) {
         this.obstacleX = x;
@@ -20,16 +22,16 @@ public class Barrier extends Obstacle implements java.io.Serializable {
     }
 
     /**
-     * Returns the name of the Barrier
+     * Returns the name of the model.Barrier
      *
-     * @return String containing the obstacle's name - Barrier
+     * @return String containing the obstacle's name - model.Barrier
      */
     public String getObstacleName() {
         return obstacleName;
     }
 
     /**
-     * Returns X coordinate of Barrier object
+     * Returns X coordinate of model.Barrier object
      *
      * @return Integer detailing the X coordinate of the obstacle
      */
@@ -38,7 +40,7 @@ public class Barrier extends Obstacle implements java.io.Serializable {
     }
 
     /**
-     * Returns Y coordinate of the Barrier object
+     * Returns Y coordinate of the model.Barrier object
      *
      * @return Integer detailing the Y coordinate of the obstacle
      */

@@ -1,3 +1,5 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +8,7 @@ import java.util.Random;
 /**
  * Created by Dennis Eddington
  *
- * Coordinator class is called upon to view the current status of the virtualizedField with a given selected drone and
+ * model.Coordinator class is called upon to view the current status of the virtualizedField with a given selected drone and
  * executes an algorithm based on the strategy value to decide the proper action.
  */
 public class Coordinator implements java.io.Serializable {
@@ -21,9 +23,9 @@ public class Coordinator implements java.io.Serializable {
     //Note: Consider best way to handle human controlled actions
 
     /**
-     * Constructer for Coordinator class
+     * Constructer for model.Coordinator class
      *
-     * @param virtualizedMap Copy of the SpaceRegion that is not fully actualized for the coordinator to base its
+     * @param virtualizedMap Copy of the model.SpaceRegion that is not fully actualized for the coordinator to base its
      *                       decision from
      */
     public Coordinator(SpaceRegion virtualizedMap) {
@@ -33,7 +35,7 @@ public class Coordinator implements java.io.Serializable {
     }
 
     /**
-     * This method simply makes a call to the Log class in order to increment its internal clock.
+     * This method simply makes a call to the model.Log class in order to increment its internal clock.
      *
      * @see Log
      */
@@ -42,19 +44,19 @@ public class Coordinator implements java.io.Serializable {
     }
 
     /**
-     * This method serves to take various input from the Simulation class and then synthesizes that information to pick
+     * This method serves to take various input from the model.Simulation class and then synthesizes that information to pick
      * the proper action for the selected drone based on its strategy value.
      *
      * Strategy 0 = Random choice
      * Strategy 1 = Optimal choice
      * Strategy 2 code has been redacted from this submitted version of the code
      *
-     * @param selectedDrone This parameter represents the current Drone object that will be recieving the action that
-     *                      is determined by the Coordinator
-     * @param virtualizedMap    Copy of the current SpaceRegion that is visible to Drones
+     * @param selectedDrone This parameter represents the current model.Drone object that will be recieving the action that
+     *                      is determined by the model.Coordinator
+     * @param virtualizedMap    Copy of the current model.SpaceRegion that is visible to Drones
      * @param strategy  A value varying between 0 and 1 that will decide the algorithm that is utilized in selected the
-     *                  Drone's next move
-     * @return  A String containing the proper decision from the Coordinator
+     *                  model.Drone's next move
+     * @return  A String containing the proper decision from the model.Coordinator
      * @see Simulation
      */
     public String coordinateBestAction(Drone selectedDrone, SpaceRegion virtualizedMap, int strategy) {
@@ -511,19 +513,19 @@ public class Coordinator implements java.io.Serializable {
     }
 
     /**
-     * This method syncs the SpaceRegion contained in the Coordinator's attributes with the updated map version after a
-     * Drone executes its requested action.
+     * This method syncs the model.SpaceRegion contained in the model.Coordinator's attributes with the updated map version after a
+     * model.Drone executes its requested action.
      *
-     * @param virtualizedMap Copy of the SpaceRegion to be synced from the Simulation to the Coordinator
+     * @param virtualizedMap Copy of the model.SpaceRegion to be synced from the model.Simulation to the model.Coordinator
      */
     public void syncVirtualizedMap(SpaceRegion virtualizedMap) {
         this.virtualizedMap = virtualizedMap;
     }
 
     /**
-     * Returns a reference to the Log class that has been maintained by this Coordinator
+     * Returns a reference to the model.Log class that has been maintained by this model.Coordinator
      *
-     * @return A Log object
+     * @return A model.Log object
      */
     public Log getLogBook() {
         return this.logBook;

@@ -1,3 +1,5 @@
+package model;
+
 import com.mongodb.client.*;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
@@ -114,6 +116,7 @@ public class Database {
     }
 
     private ObjectId getStateObjectId(String userId, boolean loadPreviousState) {
+        // ADD NULL CASE HANDLING
         Document metaData = collection.find(eq("user", userId)).first();
 
         ArrayList<String> snapshotIdList = (ArrayList<String>) metaData.get(SNAPSHOT_ID_FIELD);

@@ -1,10 +1,12 @@
+package model;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by Dennis Eddington
  *
- * Drone class that represents the Drone object in the Star Search Simulation
+ * model.Drone class that represents the model.Drone object in the model.Star Search model.Simulation
  */
 public class Drone implements java.io.Serializable {
 
@@ -15,13 +17,13 @@ public class Drone implements java.io.Serializable {
     private int strategy;
 
     /**
-     * Constructor for the Drone object that handles setting the object
+     * Constructor for the model.Drone object that handles setting the object
      *
-     * @param droneID   Auto incrementing ID number that is unique to each Drone object
-     * @param droneX    X coordinate for Drone
-     * @param droneY    Y Coordinate for Drone
-     * @param direction Pulls from the Orientation class to line up the proper direction for the Drone to be facing
-     * @param strategy  Determines which coordinator strategy will be utilized to determine best move for this Drone
+     * @param droneID   Auto incrementing ID number that is unique to each model.Drone object
+     * @param droneX    X coordinate for model.Drone
+     * @param droneY    Y Coordinate for model.Drone
+     * @param direction Pulls from the model.Orientation class to line up the proper direction for the model.Drone to be facing
+     * @param strategy  Determines which coordinator strategy will be utilized to determine best move for this model.Drone
      * @see Orientation
      * @see Coordinator
      */
@@ -62,14 +64,14 @@ public class Drone implements java.io.Serializable {
     /**
      * Getter method for Strategy value
      *
-     * @return Integer representing the strategy to be utilized for this Drone
+     * @return Integer representing the strategy to be utilized for this model.Drone
      */
     public int getStrategy() {
         return this.strategy;
     }
 
     /**
-     * Details an algorithm to execute the Thrust capability as requested from the Simulation class
+     * Details an algorithm to execute the Thrust capability as requested from the model.Simulation class
      *
      * @param distance  The distance to be thrusted
      * @param baseMap   A copy of the baseMap
@@ -675,7 +677,7 @@ public class Drone implements java.io.Serializable {
     }
 
     /**
-     * Executes the Steer action for a given Drone
+     * Executes the Steer action for a given model.Drone
      *
      * @param newOrientation
      * @param baseMap
@@ -721,7 +723,7 @@ public class Drone implements java.io.Serializable {
     }
 
     /**
-     * Executes the Scan action for a given Drone
+     * Executes the Scan action for a given model.Drone
      * @param baseMap
      * @param virtualizedMap
      * @return
@@ -761,7 +763,7 @@ public class Drone implements java.io.Serializable {
     }
 
     /**
-     * Pass method for Drone
+     * Pass method for model.Drone
      */
     public void pass() {
         //Do nothing :)
@@ -769,7 +771,7 @@ public class Drone implements java.io.Serializable {
     }
 
     /**
-     * Vaporize method for Drone
+     * Vaporize method for model.Drone
      *
      * @param baseMap
      * @param virtualizedMap
@@ -808,14 +810,14 @@ public class Drone implements java.io.Serializable {
     }
 
     /**
-     * Getter for Drone ID
+     * Getter for model.Drone ID
      *
      * @return
      */
     public int getDroneID() {return droneID;}
 
     /**
-     * Getter for Drone X Coordinate
+     * Getter for model.Drone X Coordinate
      *
      * @return
      */
@@ -824,7 +826,7 @@ public class Drone implements java.io.Serializable {
     }
 
     /**
-     * Getter for Drone Y Coordinate
+     * Getter for model.Drone Y Coordinate
      *
      * @return
      */
