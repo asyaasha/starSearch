@@ -40,4 +40,8 @@ public class GamePlayController {
             simulation = db.loadSimulationState(user, false);
         }
     }
+
+    public void saveAndQuit() throws IOException {
+        db.saveAndUploadState(simulation, user);
+    }
 }
