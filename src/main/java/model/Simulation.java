@@ -15,6 +15,8 @@ public class Simulation implements java.io.Serializable {
     private HashMap<Integer, DroneStatus> droneRecord;
     private boolean humanControlled = false; // Defaulting for testing
     public String status = "CONTINUE_SIMULATION";
+    private String[] parsedResponse = { ""};
+    private ArrayList<String> stepProgress = new ArrayList<>();
 
     /**
      * Constructor for model.Simulation class
@@ -28,6 +30,10 @@ public class Simulation implements java.io.Serializable {
     public SpaceRegion getBaseMap() {
         return this.baseMap;
     }
+    public ArrayList getStepProgress() {
+        return this.stepProgress;
+    }
+
     public SpaceRegion getVirtualizedMap() {
         return this.virtualizedMap;
     }
@@ -67,11 +73,13 @@ public class Simulation implements java.io.Serializable {
      * Step model.Simulation
      */
     public void stepSimulation() {
+        stepProgress = new ArrayList<>();
         if (!checkCompletionOfSimulation(baseMap, virtualizedMap) && !checkTurnCompletion()) {
             activeCoordinator.incrementLogs();
             for (Drone currDrone:activeDrones) {
                 //Verify model.Drone is still active
                 int droneID = currDrone.getDroneID();
+
                 if (droneRecord.get(droneID) == DroneStatus.ACTIVE) {
                     //visualizeVirtualizedMap();
                     String response = activeCoordinator.coordinateBestAction(currDrone, virtualizedMap, currDrone.getStrategy());
@@ -239,10 +247,13 @@ public class Simulation implements java.io.Serializable {
      * @param virtualizedMap
      */
     private void executeCoordinatorResponse(Drone selectedDrone, String coordinatorResponse, SpaceRegion baseMap, SpaceRegion virtualizedMap) {
+        parsedResponse = coordinatorResponse.split(",");
+        String detail = "";
+        String currStatus = "ok";
 
-        String[] parsedResponse = coordinatorResponse.split(",");
         SpaceRegion currentBase = baseMap;
         SpaceRegion currentVirtual = virtualizedMap;
+
         if (parsedResponse[0].equals("scan")) {
             activeCoordinator.getLogBook().submitLogRecord("d" + Integer.toString(selectedDrone.getDroneID()) +",scan");
             ArrayList<Content> surroundings = selectedDrone.scan(baseMap, virtualizedMap);
@@ -254,10 +265,12 @@ public class Simulation implements java.io.Serializable {
             searchResults.deleteCharAt(searchResults.length() - 1);
             activeCoordinator.getLogBook().submitLogRecord(searchResults.toString());
         } else if (parsedResponse[0].equals("steer")) {
+            detail = parsedResponse[1];
             selectedDrone.steer(parsedResponse[1], baseMap, virtualizedMap);
             activeCoordinator.getLogBook().submitLogRecord("d" + Integer.toString(selectedDrone.getDroneID()) +",steer," + parsedResponse[1].toLowerCase());
             activeCoordinator.getLogBook().submitLogRecord("ok");
         } else if (parsedResponse[0].equals("thrust")) {
+            detail = parsedResponse[2];
             if (Integer.parseInt(parsedResponse[2]) == 0 || Integer.parseInt(parsedResponse[2]) >= 4) {
                 activeCoordinator.getLogBook().submitLogRecord("d" + Integer.toString(selectedDrone.getDroneID()) +",thrust," + parsedResponse[2]);
                 activeCoordinator.getLogBook().submitLogRecord("action_not_recognized");
@@ -270,6 +283,7 @@ public class Simulation implements java.io.Serializable {
                     activeCoordinator.getLogBook().submitLogRecord("ok");
                 } else {
                     activeCoordinator.getLogBook().submitLogRecord("crash");
+                    currStatus = "crash";
                 }
             } catch (Exception e) {
                 activeCoordinator.getLogBook().submitLogRecord("action_not_recognized");
@@ -281,6 +295,12 @@ public class Simulation implements java.io.Serializable {
             selectedDrone.pass();
             activeCoordinator.getLogBook().submitLogRecord("ok");
         }
+
+        stepProgress.add("Drone ID: " + selectedDrone.getDroneID() + " " + parsedResponse[0] + " " + detail + " " + currStatus);
+    }
+
+    public String[] getParsedResponse(){
+        return this.parsedResponse;
     }
 
     /**
