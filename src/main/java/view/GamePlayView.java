@@ -33,23 +33,31 @@ public class GamePlayView extends JFrame implements ActionListener  {
         controller = new GamePlayController(this, db, user, sim);
         this.sim = sim;
         this.baseMap = sim.getBaseMap();
-        this.virtualizedMap = sim.getVirtualizedMapMap();
+        this.sim.visualizeVirtualizedMap();
+        this.virtualizedMap = sim.getVirtualizedMap();
 
         // Setting the main layout type
         setLayout(new BorderLayout());
 
         // SPACE REGION PANEL  --> check the logic from simulation visualize function
         JPanel space = new JPanel();
-        space.setLayout(new GridLayout(sim.getBaseMap().getLength(), sim.getBaseMap().getWidth()));
-        squares = new JButton[sim.getBaseMap().getWidth()][sim.getBaseMap().getLength()];
+        space.setLayout(new GridLayout(this.virtualizedMap.getLength(), this.virtualizedMap.getWidth()));
+        squares = new JButton[this.virtualizedMap.getLength() + 1][this.virtualizedMap.getWidth() + 1];
 
-
-        for(int y = 0; y < squares.length; y++) {
-            for(int x = 0; x < squares[y].length; x++) {
-                if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
-                    squares[y][x] = new JButton("S");
-                } else {
-                    squares[y][x] = new JButton("o");
+        for(int y = 1; y < squares.length; y++) {
+            for(int x = 1; x < squares[1].length; x++) {
+                if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.BARRIER) {
+                    squares[y][x] = new JButton("B");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                    squares[y][x] = new JButton(String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
+                    squares[y][x] = new JButton("-");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
+                    squares[y][x] = new JButton("*");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
+                    squares[y][x] = new JButton("O");
+                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
+                    squares[y][x] = new JButton("X");
                 }
                 space.add(squares[y][x]);
             }
