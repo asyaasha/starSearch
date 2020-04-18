@@ -36,7 +36,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         // Setting the main layout type
         setLayout(new BorderLayout());
-        controller.renderMap(space);
+        controller.renderInitialMap(space);
         add(space, BorderLayout.EAST);
 
         // TABLE PANEL TO DISPLAY PROGRESS
