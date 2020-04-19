@@ -86,20 +86,24 @@ public class GamePlayController {
     public void renderMap(JButton[][] squares){
         for(int y = 1; y < squares.length; y++) {
             for(int x = 1; x < squares[1].length; x++) {
-                if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
-                    String orientation = String.valueOf(simulation.getVirtualizedMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
+                if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                    String orientation = String.valueOf(simulation.getBaseMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
                     squares[y][x].setIcon(view.droneIconsMap.get(orientation));
-                    squares[y][x].setText(String.valueOf(simulation.getVirtualizedMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
-                } else if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
-                    squares[y][x].setIcon(null);
+                    squares[y][x].setText(String.valueOf(simulation.getBaseMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
+                } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
+                    if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getExplorationStatus() == true) {
+                        squares[y][x].setIcon(null);
+                    } else {
+                        squares[y][x].setIcon(view.imgStar);
+                    }
                     squares[y][x].setText("");
-                } else if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
+                } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
                     squares[y][x].setIcon(view.imgStar);
                     squares[y][x].setText("");
-                } else if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
+                } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
                     squares[y][x].setText("");
                     squares[y][x].setIcon(view.imgSun);
-                } else if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
+                } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
                     squares[y][x].setIcon(null);
                     squares[y][x].setText("?");
                 }

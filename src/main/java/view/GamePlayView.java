@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 
 import javax.swing.JFrame;
@@ -41,7 +40,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private final JButton[][] squares;
 
     private final GamePlayController controller;
-    private final SpaceRegion virtualizedMap;
+    private final SpaceRegion baseMap;
     private Simulation sim;
 
     private final JLabel lblProgressState;
@@ -64,10 +63,10 @@ public class GamePlayView extends JFrame implements ActionListener  {
         super("Start Search");
         count = 0;
         controller = new GamePlayController(this, db, user, sim);
-        this.virtualizedMap = sim.getVirtualizedMap();
+        this.baseMap = sim.getBaseMap();
+
         this.sim = sim;
-        System.out.println("starts");
-        System.out.println(sim.status);
+
         simulationStatusLabel = new JLabel("");
         resizeIcons();
 
@@ -88,31 +87,37 @@ public class GamePlayView extends JFrame implements ActionListener  {
         setLayout(new BorderLayout());
 
         space = new JPanel();
-        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
+        space.setLayout(new GridLayout(baseMap.getLength(), baseMap.getWidth()));
         space.setBackground(new Color(133, 185, 230));
         space.setBorder(emptyBorder);
-        space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
-        squares = new JButton[virtualizedMap.getLength() + 1][virtualizedMap.getWidth() + 1];
+        space.setLayout(new GridLayout(baseMap.getLength(), baseMap.getWidth()));
+        squares = new JButton[baseMap.getLength() + 1][baseMap.getWidth() + 1];
 
         for(int y = 1; y < squares.length; y++) {
             for(int x = 1; x < squares[1].length; x++) {
-                if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
-                    String orientation = String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
+                if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                    String orientation = String.valueOf(baseMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
                     JButton button = new JButton();
                     button.setIcon(droneIconsMap.get(orientation));
                     squares[y][x] = button;
-                    squares[y][x].setText(String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
-                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
-                    squares[y][x] = new JButton("");
-                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
+                    squares[y][x].setText(String.valueOf(baseMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
+                } else if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
+                    if (sim.getVirtualizedMap().getSpaceLayout()[y][x].getExplorationStatus() == true) {
+                        squares[y][x] = new JButton("");
+                    } else {
+                        JButton button = new JButton();
+                        button.setIcon(imgStar);
+                        squares[y][x] = button;
+                    }
+                } else if (sim.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
                     JButton button = new JButton();
                     button.setIcon(imgStar);
                     squares[y][x] = button;
-                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
+                } else if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
                     JButton button = new JButton();
                     button.setIcon(imgSun);
                     squares[y][x] = button;
-                } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
+                } else if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
                     squares[y][x] = new JButton("?");
                 }
                 space.add(squares[y][x]);
