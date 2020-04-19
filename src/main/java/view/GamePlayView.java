@@ -1,38 +1,50 @@
 package view;
-import controller.GamePlayController;
-import model.*;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.HashMap;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.ImageIcon;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+
+import controller.GamePlayController;
+import model.Content;
+import model.Database;
+import model.Simulation;
+import static model.Simulation.END_STATUS;
+import static model.Simulation.START_STATUS;
+import model.SpaceRegion;
+
 public class GamePlayView extends JFrame implements ActionListener  {
-    private String commandNext = "NEXT";
-    private String commandBack = "BACK";
-    private String commandStop = "STOP";
-    private String commandForward = "FORWARD";
+    private final JLabel simulationStatusLabel;
+
+    private final String commandNext = "NEXT";
+    private final String commandBack = "BACK";
+    private final String commandStop = "STOP";
+    private final String commandForward = "FAST FORWARD";
 
     private JButton btnBack;
-    private JButton btnStop;
-    private JButton btnForward;
-    private JPanel pnlProgress;
-    private JPanel pnlGameControlls;
-    private JPanel space;
-    private GamePlayController controller;
-    private Simulation sim;
-    private SpaceRegion baseMap;
-    private SpaceRegion virtualizedMap;
-    private JButton[][] squares;
+    private final JButton btnStop;
+    private final JButton btnForward;
+    private final JPanel pnlProgress;
+    private final JPanel pnlGameControls;
+    private final JPanel space;
+    private final JButton[][] squares;
 
-    private JLabel lblAction;
-    private JLabel lblDetail;
-    private JLabel lblDrone;
-    private JLabel lbStatus;
+    private final GamePlayController controller;
+    private Simulation sim;
+    private final SpaceRegion virtualizedMap;
+
+    private final JLabel lblAction;
 
     public ImageIcon imgSun = new ImageIcon("bh.png");
     public ImageIcon imgDroneN = new ImageIcon("drone_N.png");
@@ -45,9 +57,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
     public ImageIcon imgDroneS = new ImageIcon("drone_S.png");
 
     public ImageIcon imgStar = new ImageIcon("star.png");
-    public HashMap<String,ImageIcon> droneIconsMap = new HashMap<String,ImageIcon>();
+    public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
-    public GamePlayView(Simulation sim, Database db, String user) throws IOException {
+    public GamePlayView(Simulation sim, Database db, String user) {
         super("Start Search");
         controller = new GamePlayController(this, db, user, sim);
         this.sim = sim;
@@ -120,28 +132,28 @@ public class GamePlayView extends JFrame implements ActionListener  {
         add(pnlProgress, BorderLayout.WEST);
 
         // GAME PLAY CONTROL PANEL
-        pnlGameControlls = new JPanel();
-        pnlGameControlls.setBackground(new Color(158, 178, 178));
-        pnlGameControlls.setBorder(emptyBorder);
-        pnlGameControlls.setLayout(new GridLayout(1, 3));
+        pnlGameControls = new JPanel();
+        pnlGameControls.setBackground(new Color(158, 178, 178));
+        pnlGameControls.setBorder(emptyBorder);
+        pnlGameControls.setLayout(new GridLayout(1, 3));
 
         btnBack = new JButton(commandStop);
-        btnBack.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnBack);
+        btnBack.addActionListener(this);
+        pnlGameControls.add(btnBack);
 
         btnBack = new JButton(commandBack);
-        btnBack.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnBack);
+        btnBack.addActionListener(this);
+        pnlGameControls.add(btnBack);
 
         btnStop = new JButton(commandNext);
-        btnStop.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnStop);
+        btnStop.addActionListener(this);
+        pnlGameControls.add(btnStop);
 
         btnForward = new JButton(commandForward);
-        btnForward.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnForward);
+        btnForward.addActionListener(this);
+        pnlGameControls.add(btnForward);
 
-        add(pnlGameControlls, BorderLayout.SOUTH);
+        add(pnlGameControls, BorderLayout.SOUTH);
 
         revalidate();
 
@@ -170,11 +182,6 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
     public Image imgProcesser(ImageIcon currImage){
         return currImage.getImage().getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH);
-    }
-
-    /* Calls updateUI on all sub-components of the JFrame */
-    private void updateUI() {
-        SwingUtilities.updateComponentTreeUI(this);
     }
 
     public void actionPerformed(ActionEvent event) {

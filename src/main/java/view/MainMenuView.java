@@ -3,12 +3,20 @@ package view;
 import controller.MainMenuController;
 import model.Simulation;
 
-import javax.swing.*;
 import javax.swing.border.Border;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.awt.Font;
+import java.awt.GridLayout;
 
 public class MainMenuView extends JFrame implements ActionListener {
     final private String strFile = "File";
@@ -34,6 +42,7 @@ public class MainMenuView extends JFrame implements ActionListener {
         // message helper
         msgUtil = new MessageUtil();
         lblDisplayMessage = msgUtil.getMessage();
+        lblDisplayMessage.setBackground(Color.magenta);
 
         // Controller
         controller = new MainMenuController(this);
@@ -113,7 +122,6 @@ public class MainMenuView extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent event) {
-        lblDisplayMessage.setBackground(Color.magenta);
         String command = event.getActionCommand();
 
         // DEBUG
@@ -145,11 +153,7 @@ public class MainMenuView extends JFrame implements ActionListener {
 
                 dispose();
                 // Play menu view 3
-                try {
-                    new GamePlayView(controller.getNewSimulation(filePath), controller.getDb(), username);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                new GamePlayView(controller.getNewSimulation(filePath), controller.getDb(), username);
             }
         }
 
