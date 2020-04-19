@@ -47,12 +47,13 @@ public class GamePlayController {
         view.setStatusMessage(simulation.status);
     }
 
-    public void stepForward() throws Exception {
+    public void stepForward(JButton[][] squares) throws Exception {
         simulation = db.loadSimulationState(user, false);
         while (!simulation.status.equals(END_STATUS)) {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
+            renderMap(squares);
             view.setStatusMessage(simulation.status);
         }
     }
@@ -72,8 +73,6 @@ public class GamePlayController {
             for(int x = 1; x < squares[1].length; x++) {
                 if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
                     String orientation = String.valueOf(simulation.getVirtualizedMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
-                    System.out.println("orientation");
-                    System.out.println(orientation);
                     squares[y][x].setIcon(view.droneIconsMap.get(orientation));
                     squares[y][x].setText("");
                 } else if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
