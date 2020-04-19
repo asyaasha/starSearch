@@ -6,7 +6,6 @@ import model.Simulation;
 import view.MainMenuView;
 import view.Scenario;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class MainMenuController {
@@ -19,10 +18,11 @@ public class MainMenuController {
         db = new Database();
     }
 
-    public void getStoredSim(String user) throws IOException {
-        Simulation sim = db.loadSimulationState(user, Boolean.TRUE);
+    public void getStoredSim(String user) throws Exception {
+        Simulation sim = db.loadSimulationState(user, false);
         view.setPrevSim(sim);
     }
+
     public Simulation getNewSimulation(String filename) {
         FileParser fileParser = new FileParser(filename);
         fileParser.generateInstructions();
@@ -30,9 +30,11 @@ public class MainMenuController {
         HashMap<String, String[]> globalInstructionSet = fileParser.getInstructionSet();
         return new Simulation(globalInstructionSet);
     }
+
     public Database getDb(){
         return this.db;
     }
+
     public void checkFileInput(String filename){
         fileManager = new FileManager(filename, new Scenario());
 

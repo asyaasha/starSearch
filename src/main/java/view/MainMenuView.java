@@ -1,9 +1,7 @@
 package view;
 
 import controller.MainMenuController;
-import model.Database;
 import model.Simulation;
-import org.bson.types.ObjectId;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -127,7 +125,7 @@ public class MainMenuView extends JFrame implements ActionListener {
                 controller.getStoredSim(username);
                 dispose();
                 new GamePlayView(prevSim, controller.getDb(), username);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -162,6 +160,7 @@ public class MainMenuView extends JFrame implements ActionListener {
     public void setMessage(String message){
         msgUtil.setMessage(message);
     }
+
     public void setPrevSim(Simulation sim){
         this.prevSim = sim;
     }

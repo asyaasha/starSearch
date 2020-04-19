@@ -1,7 +1,6 @@
 package controller;
 
-import java.awt.*;
-import java.io.IOException;
+import javax.swing.*;
 
 import model.Content;
 import model.Database;
@@ -9,7 +8,7 @@ import model.Simulation;
 import model.SpaceRegion;
 import view.GamePlayView;
 
-import javax.swing.*;
+import static model.Simulation.END_STATUS;
 
 public class GamePlayController {
     private Simulation simulation;
@@ -19,17 +18,20 @@ public class GamePlayController {
     private SpaceRegion virtualizedMap;
 
 
-    public  GamePlayController(GamePlayView view, Database db, String user, Simulation simulation) throws IOException {
+    public  GamePlayController(GamePlayView view, Database db, String user, Simulation simulation) {
         this.db = db;
         this.user = user;
         this.view = view;
         this.simulation = simulation;
         this.simulation.visualizeVirtualizedMap();
         this.virtualizedMap = simulation.getVirtualizedMap();
+        try {
+            db.uploadNewSimulation(user);
+        } catch (Exception ignored) {}
     }
 
-    public void nextStep() throws IOException {
-        if (!simulation.status.equals("END_SIMULATION")) {
+    public void nextStep() throws Exception {
+        if (!simulation.status.equals(END_STATUS)) {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
@@ -39,21 +41,25 @@ public class GamePlayController {
         }
     }
 
-    public void previousStep() throws IOException {
+    public void previousStep() throws Exception {
         simulation = db.loadSimulationState(user, true);
     }
 
-    public void stepForward() throws IOException {
+    public void stepForward() throws Exception {
         simulation = db.loadSimulationState(user, false);
-        System.out.println(simulation.status);
-        while (!simulation.status.equals("END_SIMULATION")) {
+        while (!simulation.status.equals(END_STATUS)) {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
         }
     }
 
-    public void saveAndUpload() throws IOException {
+    public void reset() throws Exception {
+        db.resetSimulationState(user);
+        System.out.println(simulation.status);
+    }
+
+    public void saveAndUpload() throws Exception {
         db.saveAndUploadState(simulation, user);
     }
 

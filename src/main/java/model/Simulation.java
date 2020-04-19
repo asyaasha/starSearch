@@ -7,6 +7,10 @@ import java.util.HashMap;
  * Created by Dennis Eddington
  */
 public class Simulation implements java.io.Serializable {
+    public static final String START_STATUS = "START_SIMULATION";
+    public static final String CONTINUE_STATUS = "CONTINUE_SIMULATION";
+    public static final String END_STATUS = "END_SIMULATION";
+
     private SpaceRegion baseMap;
     private SpaceRegion virtualizedMap;
     private ArrayList<Drone> activeDrones;
@@ -14,7 +18,7 @@ public class Simulation implements java.io.Serializable {
     private int turnLimit;
     private HashMap<Integer, DroneStatus> droneRecord;
     private boolean humanControlled = false; // Defaulting for testing
-    public String status = "CONTINUE_SIMULATION";
+    public String status = START_STATUS;
     private String[] parsedResponse = { ""};
     private ArrayList<String> stepProgress = new ArrayList<>();
 
@@ -93,10 +97,9 @@ public class Simulation implements java.io.Serializable {
                 DroneStatus status = droneRecord.get(curr_droneID);
                 if (status == DroneStatus.ACTIVE) {
                     droneExists = true;
-                } else if (status == DroneStatus.INACTIVE){
-                    droneExists = false;
                 }
-                if (droneExists == false) {
+
+                if (!droneExists) {
                     int deletion_candidate = -1;
                     for (int i = 0; i < activeDrones.size(); i++) {
                         if (activeDrones.get(i).getDroneID() == curr_droneID) {
@@ -109,12 +112,13 @@ public class Simulation implements java.io.Serializable {
                 }
             }
             if (activeDrones.size() == 0) {
-                status = "END_SIMULATION";
+                status = END_STATUS;
             }
-            status =  "CONTINUE_SIMULATION";
+            status = CONTINUE_STATUS;
         } else {
-            status =  "END_SIMULATION";
+            status = END_STATUS;
         }
+        System.out.println(status);
     }
 
     /**
@@ -139,10 +143,9 @@ public class Simulation implements java.io.Serializable {
                 DroneStatus status = droneRecord.get(curr_droneID);
                 if (status == DroneStatus.ACTIVE) {
                     droneExists = true;
-                } else if (status == DroneStatus.INACTIVE){
-                    droneExists = false;
                 }
-                if (droneExists == false) {
+
+                if (!droneExists) {
                     int deletion_candidate = -1;
                     for (int i = 0; i < activeDrones.size(); i++) {
                         if (activeDrones.get(i).getDroneID() == curr_droneID) {
