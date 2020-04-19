@@ -54,7 +54,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
     public ImageIcon imgDroneSE = new ImageIcon("drone_SE.png");
     public ImageIcon imgDroneSW = new ImageIcon("drone_SW.png");
     public ImageIcon imgDroneS = new ImageIcon("drone_S.png");
-    public ImageIcon imgStar = new ImageIcon("star.png");
+    public ImageIcon imgStar = new ImageIcon("star1.png");
     public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
     private int count;

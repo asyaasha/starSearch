@@ -61,6 +61,8 @@ public class Scenario {
     public String getTurns() {
         return this.turns;
     }
+    int dronesMax;
+    int sunsMax;
 
     // Setters
     public void setRegion(int width, int height) {
@@ -73,8 +75,8 @@ public class Scenario {
             }
         }
 
-        int dronesMax = regionSize > MAX_DRONES ? MAX_DRONES : regionSize;
-        int sunsMax = regionSize / 2;
+        dronesMax = regionSize > MAX_DRONES ? MAX_DRONES : regionSize;
+        sunsMax = regionSize / 2;
 
         this.width = width;
         this.height = height;
@@ -105,7 +107,6 @@ public class Scenario {
     public Boolean checkRegion(int proposedWidth, int proposedHeight) {
        if (proposedWidth < MIN_SQ || proposedWidth > MAX_WIDTH || proposedHeight < MIN_SQ
                || proposedHeight > MAX_HEIGHT  ) {
-           System.out.println("here");
             return Boolean.FALSE;
         }
 
@@ -113,13 +114,22 @@ public class Scenario {
     }
 
     // implement checks
-    public Boolean checkDrones() {
+    public Boolean checkDronesNum() {
+        if (numOfDrones < MIN_DRONES || numOfDrones > dronesMax) {
+            return Boolean.FALSE;
+        }
         return Boolean.TRUE;
     }
     public Boolean checkSuns() {
+        if (numOfSuns < MIN_SUNS || numOfSuns > sunsMax) {
+            return Boolean.FALSE;
+        }
         return Boolean.TRUE;
     }
     public Boolean checkTurns() {
+        if (Integer.parseInt(turns) < 1 || Integer.parseInt(turns)  > 200) {
+            return Boolean.FALSE;
+        }
         return Boolean.TRUE;
     }
 }
