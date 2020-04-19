@@ -8,6 +8,9 @@ import model.Simulation;
 import model.SpaceRegion;
 import view.GamePlayView;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import static model.Simulation.END_STATUS;
 
 public class GamePlayController {
