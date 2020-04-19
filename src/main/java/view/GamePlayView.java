@@ -3,6 +3,7 @@ package view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
@@ -45,16 +46,17 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
     private final JLabel lblProgressState;
 
-    public ImageIcon imgSun = new ImageIcon("sun.png");
-    public ImageIcon imgDroneN = new ImageIcon("drone_N.png");
-    public ImageIcon imgDroneE = new ImageIcon("drone_E.png");
-    public ImageIcon imgDroneW = new ImageIcon("drone_W.png");
-    public ImageIcon imgDroneNE = new ImageIcon("drone_NE.png");
-    public ImageIcon imgDroneNW = new ImageIcon("drone_NW.png");
-    public ImageIcon imgDroneSE = new ImageIcon("drone_SE.png");
-    public ImageIcon imgDroneSW = new ImageIcon("drone_SW.png");
-    public ImageIcon imgDroneS = new ImageIcon("drone_S.png");
-    public ImageIcon imgStar = new ImageIcon("star1.png");
+    public ImageIcon imgSun = new ImageIcon(getImageFilePath("sun.png"));
+    public ImageIcon imgDroneN = new ImageIcon(getImageFilePath("drone_N.png"));
+    public ImageIcon imgDroneE = new ImageIcon(getImageFilePath("drone_E.png"));
+    public ImageIcon imgDroneW = new ImageIcon(getImageFilePath("drone_W.png"));
+    public ImageIcon imgDroneNE = new ImageIcon(getImageFilePath("drone_NE.png"));
+    public ImageIcon imgDroneNW = new ImageIcon(getImageFilePath("drone_NW.png"));
+    public ImageIcon imgDroneSE = new ImageIcon(getImageFilePath("drone_SE.png"));
+    public ImageIcon imgDroneSW = new ImageIcon(getImageFilePath("drone_SW.png"));
+    public ImageIcon imgDroneS = new ImageIcon(getImageFilePath("drone_S.png"));
+    public ImageIcon imgStar = new ImageIcon(getImageFilePath("star.png"));
+
     public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
     private int count;
@@ -268,5 +270,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
         } else {
             simulationStatusLabel.setText("");
         }
+    }
+
+    public String getImageFilePath(String imageName) {
+        return String.join(File.separator, "resources", "images", imageName);
     }
 }

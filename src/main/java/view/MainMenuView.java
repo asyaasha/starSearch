@@ -17,8 +17,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.File;
 
 public class MainMenuView extends JFrame implements ActionListener {
+    public final String DRONE_IMAGE_PATH = String.join(File.separator, "resources", "images", "drone.png");
     final private String strFile = "File";
     final private String strBrowse = "Browse...";
     final private String strResume = "Resume Simulation";
@@ -72,7 +74,7 @@ public class MainMenuView extends JFrame implements ActionListener {
         btnStart.setBackground(new Color(158, 178, 178));
 
         // Icon
-        ImageIcon image = new ImageIcon("drone.png");
+        ImageIcon image = new ImageIcon(DRONE_IMAGE_PATH);
         JLabel labelTitle = new JLabel("STAR SEARCH", JLabel.CENTER);
         labelTitle.setForeground(new Color(255,215,0));
         labelTitle.setFont(new Font("monospaced", Font.PLAIN, 90));
