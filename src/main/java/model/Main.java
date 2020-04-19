@@ -33,7 +33,7 @@ public class Main {
 
         simulation = db.loadSimulationState(userId, false);
 
-//        while (!simulation.status.equals("END_SIMULATION")) {
+//        while (!simulation.status.equals(Simulation.END_STATUS)) {
 //            simulation.stepSimulation();
 //            db.saveAndUploadState(simulation, userId);
 //
