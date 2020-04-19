@@ -113,6 +113,7 @@ public class Simulation implements java.io.Serializable {
             }
             if (activeDrones.size() == 0) {
                 status = END_STATUS;
+                return;
             }
             status = CONTINUE_STATUS;
         } else {
