@@ -1,43 +1,51 @@
 package view;
-import controller.GamePlayController;
-import model.*;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.ImageIcon;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
+
+import controller.GamePlayController;
+import model.Content;
+import model.Database;
+import model.Simulation;
+import static model.Simulation.END_STATUS;
+import static model.Simulation.START_STATUS;
+import model.SpaceRegion;
+
 public class GamePlayView extends JFrame implements ActionListener  {
-    private String commandNext = "NEXT";
-    private String commandBack = "BACK";
-    private String commandStop = "STOP";
-    private String commandForward = "FORWARD";
+    private final JLabel simulationStatusLabel;
 
-    private JButton btnBack;
-    private JButton btnStop;
-    private JButton btnForward;
-    private JPanel pnlProgress;
-    private JPanel statProgress;
-    private JPanel pnlGameControlls;
-    private JPanel space;
-    private GamePlayController controller;
+    private final String commandNext = "NEXT";
+    private final String commandBack = "BACK";
+    private final String commandStop = "STOP";
+    private final String commandForward = "FAST FORWARD";
+    private final String progressTitle = "--- CURRENT PROGRESS --- ";
+    private final JButton btnNext;
+    private final JButton btnBack;
+    private final JButton btnStop;
+    private final JButton btnForward;
+    private final JPanel pnlProgress;
+    private final JPanel pnlGameControls;
+    private final JPanel space;
+    private final JButton[][] squares;
+
+    private final GamePlayController controller;
+    private final SpaceRegion virtualizedMap;
     private Simulation sim;
-    private SpaceRegion baseMap;
-    private SpaceRegion virtualizedMap;
-    private JButton[][] squares;
 
-    private JLabel lblAction;
-    private JLabel statAction;
-    private JLabel lblDetail;
-    private JLabel lblDrone;
-    private JLabel lbStatus;
+    private final JLabel lblProgressState;
 
-    public ImageIcon imgSun = new ImageIcon("bh.png");
+    public ImageIcon imgSun = new ImageIcon("sun.png");
     public ImageIcon imgDroneN = new ImageIcon("drone_N.png");
     public ImageIcon imgDroneE = new ImageIcon("drone_E.png");
     public ImageIcon imgDroneW = new ImageIcon("drone_W.png");
@@ -46,17 +54,18 @@ public class GamePlayView extends JFrame implements ActionListener  {
     public ImageIcon imgDroneSE = new ImageIcon("drone_SE.png");
     public ImageIcon imgDroneSW = new ImageIcon("drone_SW.png");
     public ImageIcon imgDroneS = new ImageIcon("drone_S.png");
-
     public ImageIcon imgStar = new ImageIcon("star.png");
-    public HashMap<String,ImageIcon> droneIconsMap = new HashMap<String,ImageIcon>();
+    public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
-    public GamePlayView(Simulation sim, Database db, String user) throws IOException {
+    public GamePlayView(Simulation sim, Database db, String user) {
         super("Start Search");
         controller = new GamePlayController(this, db, user, sim);
-        this.sim = sim;
         this.virtualizedMap = sim.getVirtualizedMap();
+        this.sim = sim;
 
+        simulationStatusLabel = new JLabel("");
         resizeIcons();
+
         droneIconsMap.put("NORTH", imgDroneN);
         droneIconsMap.put("NORTHEAST", imgDroneNE);
         droneIconsMap.put("NORTHWEST", imgDroneNW);
@@ -68,14 +77,10 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         getContentPane().setVisible(false);
         getContentPane().setVisible(true);
-        Border emptyBorder = BorderFactory.createEmptyBorder(40, 70, 20 , 70);
+        Border emptyBorder = BorderFactory.createEmptyBorder(40, 20, 20 , 20);
 
         // Setting the main layout type
         setLayout(new BorderLayout());
-
-        ImageIcon imgDrone = new ImageIcon("drone.png");
-        Image newImgD = imgDrone.getImage().getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        imgDrone = new ImageIcon(newImgD);
 
         space = new JPanel();
         space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
@@ -87,18 +92,20 @@ public class GamePlayView extends JFrame implements ActionListener  {
         for(int y = 1; y < squares.length; y++) {
             for(int x = 1; x < squares[1].length; x++) {
                 if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                    String orientation = String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
                     JButton button = new JButton();
-                    button.setIcon(imgDrone);
+                    button.setIcon(droneIconsMap.get(orientation));
                     squares[y][x] = button;
                     squares[y][x].setText(String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
                     squares[y][x] = new JButton("");
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
-                    squares[y][x] = new JButton("+");
+                    JButton button = new JButton();
+                    button.setIcon(imgStar);
+                    squares[y][x] = button;
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
                     JButton button = new JButton();
                     button.setIcon(imgSun);
-                    button.setText("");
                     squares[y][x] = button;
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
                     squares[y][x] = new JButton("?");
@@ -114,38 +121,42 @@ public class GamePlayView extends JFrame implements ActionListener  {
         pnlProgress.setBackground(new Color(133, 185, 230));
         pnlProgress.setLayout(new GridLayout(10, 1));
 
-        JLabel lblTitle = new JLabel("--- CURRENT PROGRESS --- ");
+        JLabel lblTitle = new JLabel(progressTitle);
 
-        lblAction = new JLabel("");
+        lblProgressState = new JLabel("");
         pnlProgress.add(lblTitle);
-        pnlProgress.add(lblAction);
-        controller.setProgress(lblAction);
+        pnlProgress.add(lblProgressState);
+        pnlProgress.add(simulationStatusLabel);
+        controller.setProgress(lblProgressState);
 
         add(pnlProgress, BorderLayout.WEST);
 
         // GAME PLAY CONTROL PANEL
-        pnlGameControlls = new JPanel();
-        pnlGameControlls.setBackground(new Color(158, 178, 178));
-        pnlGameControlls.setBorder(emptyBorder);
-        pnlGameControlls.setLayout(new GridLayout(1, 3));
+        pnlGameControls = new JPanel();
+        pnlGameControls.setBackground(new Color(158, 178, 178));
+        pnlGameControls.setBorder(emptyBorder);
+        pnlGameControls.setLayout(new GridLayout(1, 3));
 
-        btnBack = new JButton(commandStop);
-        btnBack.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnBack);
+        btnStop = new JButton(commandStop);
+        btnStop.setPreferredSize(new Dimension(60, 50));
+        btnStop.addActionListener(this);
+        pnlGameControls.add(btnStop);
 
         btnBack = new JButton(commandBack);
-        btnBack.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnBack);
-
-        btnStop = new JButton(commandNext);
-        btnStop.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnStop);
+        btnBack.setPreferredSize(new Dimension(60, 50));
+        btnBack.addActionListener(this);
+        pnlGameControls.add(btnBack);
+        btnNext = new JButton(commandNext);
+        btnNext.setPreferredSize(new Dimension(60, 50));
+        btnNext.addActionListener(this);
+        pnlGameControls.add(btnNext);
 
         btnForward = new JButton(commandForward);
-        btnForward.addActionListener((ActionListener) this);
-        pnlGameControlls.add(btnForward);
+        btnForward.setPreferredSize(new Dimension(60, 50));
+        btnForward.addActionListener(this);
+        pnlGameControls.add(btnForward);
 
-        add(pnlGameControlls, BorderLayout.SOUTH);
+        add(pnlGameControls, BorderLayout.SOUTH);
 
         revalidate();
 
@@ -181,20 +192,14 @@ public class GamePlayView extends JFrame implements ActionListener  {
         return currImage.getImage().getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH);
     }
 
-    /* Calls updateUI on all sub-components of the JFrame */
-    private void updateUI() {
-        SwingUtilities.updateComponentTreeUI(this);
-    }
-
     public void actionPerformed(ActionEvent event) {
         String command = event.getActionCommand();
-        System.out.println(command);
 
         // Perform next step
         if (command.equals(commandNext)) {
             try {
                 controller.nextStep();
-                controller.setProgress(lblAction);
+                controller.setProgress(lblProgressState);
                 controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -202,8 +207,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         }
         if (command.equals(commandForward)) {
             try {
-                controller.stepForward();
-                controller.renderMap(squares);
+                controller.stepForward(squares);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -211,7 +215,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandBack)) {
             try {
                 controller.previousStep();
-                controller.setProgress(lblAction);
+                controller.setProgress(lblProgressState);
                 controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -231,5 +235,15 @@ public class GamePlayView extends JFrame implements ActionListener  {
         }
 
         revalidate();
+    }
+
+    public void setStatusMessage(String message){
+        if (message.equals(END_STATUS)) {
+            simulationStatusLabel.setText("End of Simulation");
+        } else if (message.equals(START_STATUS)) {
+            simulationStatusLabel.setText("Start of Simulation");
+        } else {
+            simulationStatusLabel.setText("");
+        }
     }
 }

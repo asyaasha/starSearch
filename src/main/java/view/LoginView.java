@@ -1,6 +1,5 @@
 package view;
 
-import controller.App;
 import controller.LoginController;
 
 import javax.swing.*;
@@ -8,7 +7,6 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class LoginView extends JFrame implements ActionListener {
 
@@ -30,7 +28,6 @@ public class LoginView extends JFrame implements ActionListener {
         // message helper
         msgUtil = new MessageUtil();
         lblDisplayMessage = msgUtil.getMessage();
-        //lblDisplayMessage.setForeground(Color.magenta);
 
         // LOGIN PANEL
         JPanel login = new JPanel();

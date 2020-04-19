@@ -3,20 +3,16 @@ package controller;
 import view.Scenario;
 
 import java.util.*;
-
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-
 
 public class FileManager {
 
     /**
      * Created by Dennis Eddington updated by Asiya
      *
-     * File Parser class that goes through the requested file and parses all pertinent information to test the requirements and pass to a new instance of Scenario class
+     * File Manager class that validates file inputs
      */
     private Scenario scenario;
     private String filePath;
@@ -24,7 +20,7 @@ public class FileManager {
     private int nextValidLine;
 
     /**
-     * Constructor for the FileParser object
+     * Constructor for the FileManager object
      *
      * @param filePath  FilePath of file to parse
      */
@@ -38,10 +34,6 @@ public class FileManager {
      */
     public Boolean processFilePath() {
         data = new ArrayList<>();
-
-        System.out.println("HERE");
-        System.out.println(this.filePath.length() < 1);
-        System.out.println(this.filePath);
 
         if (this.filePath.length() < 1) {
             return Boolean.FALSE;
@@ -116,8 +108,5 @@ public class FileManager {
     public Boolean processTurns() {
         scenario.setTurns(data.get(data.size() - 1));
         return scenario.checkTurns();
-    }
-    public Scenario getScenario() {
-        return scenario;
     }
 }

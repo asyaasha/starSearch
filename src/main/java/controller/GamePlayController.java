@@ -39,6 +39,7 @@ public class GamePlayController {
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
             view.setSimulation(simulation);
+            view.setStatusMessage(simulation.status);
         } else {
             System.out.println("ERROR: SIMULATION HAS ALREADY ENDED");
             this.exploredTiles = simulation.countExploredTiles();
@@ -50,14 +51,17 @@ public class GamePlayController {
 
     public void previousStep() throws Exception {
         simulation = db.loadSimulationState(user, true);
+        view.setStatusMessage(simulation.status);
     }
 
-    public void stepForward() throws Exception {
+    public void stepForward(JButton[][] squares) throws Exception {
         simulation = db.loadSimulationState(user, false);
         while (!simulation.status.equals(END_STATUS)) {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
+            renderMap(squares);
+            view.setStatusMessage(simulation.status);
         }
         this.exploredTiles = simulation.countExploredTiles();
         this.aliveDrones = simulation.countAliveDrones();
@@ -67,11 +71,12 @@ public class GamePlayController {
 
     public void reset() throws Exception {
         db.resetSimulationState(user);
-        System.out.println(simulation.status);
+        view.setStatusMessage(simulation.status);
     }
 
     public void saveAndUpload() throws Exception {
         db.saveAndUploadState(simulation, user);
+        System.out.println(simulation.status);
     }
 
     public void renderMap(JButton[][] squares){
@@ -79,8 +84,6 @@ public class GamePlayController {
             for(int x = 1; x < squares[1].length; x++) {
                 if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
                     String orientation = String.valueOf(simulation.getVirtualizedMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
-                    System.out.println("orientation");
-                    System.out.println(orientation);
                     squares[y][x].setIcon(view.droneIconsMap.get(orientation));
                     squares[y][x].setText(String.valueOf(simulation.getVirtualizedMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
                 } else if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {

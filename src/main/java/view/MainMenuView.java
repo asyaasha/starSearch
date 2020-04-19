@@ -3,16 +3,23 @@ package view;
 import controller.MainMenuController;
 import model.Simulation;
 
-import javax.swing.*;
 import javax.swing.border.Border;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.awt.Font;
+import java.awt.GridLayout;
 
 public class MainMenuView extends JFrame implements ActionListener {
     final private String strFile = "File";
-    final private String strWelcome = "WELCOME TO THE STAR SEARCH, ";
     final private String strBrowse = "Browse...";
     final private String strResume = "Resume Simulation";
     final private String strStart = "Start New Simulation";
@@ -34,6 +41,7 @@ public class MainMenuView extends JFrame implements ActionListener {
         // message helper
         msgUtil = new MessageUtil();
         lblDisplayMessage = msgUtil.getMessage();
+        lblDisplayMessage.setBackground(Color.magenta);
 
         // Controller
         controller = new MainMenuController(this);
@@ -45,8 +53,6 @@ public class MainMenuView extends JFrame implements ActionListener {
         ));
         filePicker.setMode(JFilePicker.MODE_OPEN);
         filePicker.addFileTypeFilter(".csv", "CSV File");
-        String filePath = filePicker.getSelectedFilePath();
-
 
         setLayout(new BorderLayout());
         Border emptyBorder = BorderFactory.createEmptyBorder(20, 90, 0 , 80);
@@ -63,7 +69,6 @@ public class MainMenuView extends JFrame implements ActionListener {
         btnStart = new JButton(strStart);
         btnStart.addActionListener((ActionListener) this);
         btnStart.setPreferredSize(new Dimension(60, 50));
-       // btnStart.setBorder(emptyBorder);
         btnStart.setBackground(new Color(158, 178, 178));
 
         // Icon
@@ -113,7 +118,6 @@ public class MainMenuView extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent event) {
-        lblDisplayMessage.setBackground(Color.magenta);
         String command = event.getActionCommand();
 
         // DEBUG
@@ -135,21 +139,10 @@ public class MainMenuView extends JFrame implements ActionListener {
             String filePath = filePicker.getSelectedFilePath();
             controller.checkFileInput(filePath);
 
-            // controller uses file parser to read and check inputs
-            // Store data to scenario class
-            // if all is good pass Scenario class to main
-            // Use Scenario parser to start sim
-            System.out.println(lblDisplayMessage.getText());
             if (lblDisplayMessage.getText().equals("Success!")) {
-                // open the game play screen and start sim
-
                 dispose();
                 // Play menu view 3
-                try {
-                    new GamePlayView(controller.getNewSimulation(filePath), controller.getDb(), username);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                new GamePlayView(controller.getNewSimulation(filePath), controller.getDb(), username);
             }
         }
 
