@@ -98,7 +98,7 @@ public class StarField implements java.io.Serializable {
         this.occupantObstacle = obstacle;
 
         if (obstacle == null) {
-            this.starFieldContents = Content.EMPTY;
+            this.starFieldContents = Content.STARS;
             return;
         }
 
