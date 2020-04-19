@@ -36,6 +36,7 @@ public class GamePlayController {
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
             view.setSimulation(simulation);
+            view.setStatusMessage(simulation.status);
         } else {
             System.out.println("ERROR: SIMULATION HAS ALREADY ENDED");
         }
@@ -43,6 +44,7 @@ public class GamePlayController {
 
     public void previousStep() throws Exception {
         simulation = db.loadSimulationState(user, true);
+        view.setStatusMessage(simulation.status);
     }
 
     public void stepForward() throws Exception {
@@ -51,16 +53,18 @@ public class GamePlayController {
             simulation.stepSimulation();
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
+            view.setStatusMessage(simulation.status);
         }
     }
 
     public void reset() throws Exception {
         db.resetSimulationState(user);
-        System.out.println(simulation.status);
+        view.setStatusMessage(simulation.status);
     }
 
     public void saveAndUpload() throws Exception {
         db.saveAndUploadState(simulation, user);
+        System.out.println(simulation.status);
     }
 
     public void renderMap(JButton[][] squares){

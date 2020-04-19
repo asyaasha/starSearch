@@ -65,6 +65,8 @@ public class GamePlayView extends JFrame implements ActionListener  {
         this.sim = sim;
         this.virtualizedMap = sim.getVirtualizedMap();
 
+        simulationStatusLabel = new JLabel("");
+
         resizeIcons();
         droneIconsMap.put("NORTH", imgDroneN);
         droneIconsMap.put("NORTHEAST", imgDroneNE);
@@ -127,6 +129,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         lblAction = new JLabel("");
         pnlProgress.add(lblTitle);
         pnlProgress.add(lblAction);
+        pnlProgress.add(simulationStatusLabel);
         controller.setProgress(lblAction);
 
         add(pnlProgress, BorderLayout.WEST);
@@ -229,5 +232,15 @@ public class GamePlayView extends JFrame implements ActionListener  {
         }
 
         revalidate();
+    }
+
+    public void setStatusMessage(String message){
+        if (message.equals(END_STATUS)) {
+            simulationStatusLabel.setText("End of Simulation");
+        } else if (message.equals(START_STATUS)) {
+            simulationStatusLabel.setText("Start of Simulation");
+        } else {
+            simulationStatusLabel.setText("");
+        }
     }
 }
