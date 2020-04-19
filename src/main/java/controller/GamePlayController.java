@@ -8,6 +8,9 @@ import model.Simulation;
 import model.SpaceRegion;
 import view.GamePlayView;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import static model.Simulation.END_STATUS;
 
 public class GamePlayController {
@@ -54,13 +57,14 @@ public class GamePlayController {
         view.setStatusMessage(simulation.status);
     }
 
-    public void stepForward(JButton[][] squares) throws Exception {
+    public void stepForward(JButton[][] squares, JButton forward) throws Exception {
+        forward.setEnabled(false);
         simulation = db.loadSimulationState(user, false);
         while (!simulation.status.equals(END_STATUS)) {
             simulation.stepSimulation();
+            renderMap(squares);
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
-            renderMap(squares);
             view.setStatusMessage(simulation.status);
         }
         this.exploredTiles = simulation.countExploredTiles();

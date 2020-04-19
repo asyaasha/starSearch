@@ -140,6 +140,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }
@@ -212,6 +213,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }
@@ -284,6 +286,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }
@@ -356,6 +359,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }
@@ -428,6 +432,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }
@@ -500,6 +505,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }
@@ -572,6 +578,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }
@@ -645,6 +652,7 @@ public class Drone implements java.io.Serializable {
                     }
 
                     if (observableFieldBase.getStarFieldContents() == Content.SUN ||observableFieldBase.getStarFieldContents() == Content.DRONE) {
+                        virtualizedMap.getSpaceLayout()[observableY][observableX].updateStarFieldContents(Content.SUN);
                         vaporize(baseMap, virtualizedMap, observableFieldBase, observableFieldVirtualized, modified_x + 1, rowLimit - modified_y, droneRecord);
                         break;
                     }

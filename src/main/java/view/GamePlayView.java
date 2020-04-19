@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 
 import javax.swing.JFrame;
@@ -57,12 +58,16 @@ public class GamePlayView extends JFrame implements ActionListener  {
     public ImageIcon imgStar = new ImageIcon("star.png");
     public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
+    private int count;
+
     public GamePlayView(Simulation sim, Database db, String user) {
         super("Start Search");
+        count = 0;
         controller = new GamePlayController(this, db, user, sim);
         this.virtualizedMap = sim.getVirtualizedMap();
         this.sim = sim;
-
+        System.out.println("starts");
+        System.out.println(sim.status);
         simulationStatusLabel = new JLabel("");
         resizeIcons();
 
@@ -143,6 +148,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         pnlGameControls.add(btnStop);
 
         btnBack = new JButton(commandBack);
+        btnBack.setEnabled(false);
         btnBack.setPreferredSize(new Dimension(60, 50));
         btnBack.addActionListener(this);
         pnlGameControls.add(btnBack);
@@ -178,14 +184,14 @@ public class GamePlayView extends JFrame implements ActionListener  {
     public void resizeIcons() {
         imgSun = new ImageIcon(imgProcesser(imgSun));
         imgDroneN = new ImageIcon(imgProcesser(imgDroneN));
-        imgDroneE  = new ImageIcon(imgProcesser(imgDroneE));
-        imgDroneW   = new ImageIcon(imgProcesser(imgDroneW));
-        imgDroneS   = new ImageIcon(imgProcesser(imgDroneS));
-        imgDroneSE  = new ImageIcon( imgProcesser(imgDroneSE));
-        imgDroneSW   = new ImageIcon(imgProcesser(imgDroneSW));
-        imgDroneNE   = new ImageIcon(imgProcesser(imgDroneNE));
-        imgDroneNW   = new ImageIcon(imgProcesser(imgDroneNW));
-        imgStar   = new ImageIcon( imgProcesser(imgStar));
+        imgDroneE = new ImageIcon(imgProcesser(imgDroneE));
+        imgDroneW = new ImageIcon(imgProcesser(imgDroneW));
+        imgDroneS = new ImageIcon(imgProcesser(imgDroneS));
+        imgDroneSE = new ImageIcon( imgProcesser(imgDroneSE));
+        imgDroneSW = new ImageIcon(imgProcesser(imgDroneSW));
+        imgDroneNE = new ImageIcon(imgProcesser(imgDroneNE));
+        imgDroneNW = new ImageIcon(imgProcesser(imgDroneNW));
+        imgStar = new ImageIcon( imgProcesser(imgStar));
     }
 
     public Image imgProcesser(ImageIcon currImage){
@@ -197,7 +203,10 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         // Perform next step
         if (command.equals(commandNext)) {
+            btnBack.setEnabled(true);
+
             try {
+                count ++;
                 controller.nextStep();
                 controller.setProgress(lblProgressState);
                 controller.renderMap(squares);
@@ -206,17 +215,27 @@ public class GamePlayView extends JFrame implements ActionListener  {
             }
         }
         if (command.equals(commandForward)) {
-            try {
-                controller.stepForward(squares);
-            } catch (Exception e) {
-                e.printStackTrace();
+            btnBack.setEnabled(false);
+            btnNext.setEnabled(false);
+
+            if (!btnBack.isEnabled() && !btnNext.isEnabled()) {
+                try {
+                    controller.stepForward(squares, btnForward);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         if (command.equals(commandBack)) {
             try {
-                controller.previousStep();
-                controller.setProgress(lblProgressState);
-                controller.renderMap(squares);
+                count --;
+                if (count == 0) {
+                    btnBack.setEnabled(false);
+                } else {
+                    controller.previousStep();
+                    controller.setProgress(lblProgressState);
+                    controller.renderMap(squares);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
