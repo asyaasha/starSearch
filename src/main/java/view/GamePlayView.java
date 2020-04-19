@@ -1,9 +1,6 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -32,8 +29,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private final String commandBack = "BACK";
     private final String commandStop = "STOP";
     private final String commandForward = "FAST FORWARD";
-
-    private JButton btnBack;
+    private final String progressTitle = "--- CURRENT PROGRESS --- ";
+    private final JButton btnNext;
+    private final JButton btnBack;
     private final JButton btnStop;
     private final JButton btnForward;
     private final JPanel pnlProgress;
@@ -42,12 +40,12 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private final JButton[][] squares;
 
     private final GamePlayController controller;
-    private Simulation sim;
     private final SpaceRegion virtualizedMap;
+    private Simulation sim;
 
-    private final JLabel lblAction;
+    private final JLabel lblProgressState;
 
-    public ImageIcon imgSun = new ImageIcon("bh.png");
+    public ImageIcon imgSun = new ImageIcon("sun.png");
     public ImageIcon imgDroneN = new ImageIcon("drone_N.png");
     public ImageIcon imgDroneE = new ImageIcon("drone_E.png");
     public ImageIcon imgDroneW = new ImageIcon("drone_W.png");
@@ -56,19 +54,18 @@ public class GamePlayView extends JFrame implements ActionListener  {
     public ImageIcon imgDroneSE = new ImageIcon("drone_SE.png");
     public ImageIcon imgDroneSW = new ImageIcon("drone_SW.png");
     public ImageIcon imgDroneS = new ImageIcon("drone_S.png");
-
     public ImageIcon imgStar = new ImageIcon("star.png");
     public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
     public GamePlayView(Simulation sim, Database db, String user) {
         super("Start Search");
         controller = new GamePlayController(this, db, user, sim);
-        this.sim = sim;
         this.virtualizedMap = sim.getVirtualizedMap();
+        this.sim = sim;
 
         simulationStatusLabel = new JLabel("");
-
         resizeIcons();
+
         droneIconsMap.put("NORTH", imgDroneN);
         droneIconsMap.put("NORTHEAST", imgDroneNE);
         droneIconsMap.put("NORTHWEST", imgDroneNW);
@@ -80,14 +77,10 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
         getContentPane().setVisible(false);
         getContentPane().setVisible(true);
-        Border emptyBorder = BorderFactory.createEmptyBorder(40, 70, 20 , 70);
+        Border emptyBorder = BorderFactory.createEmptyBorder(40, 20, 20 , 20);
 
         // Setting the main layout type
         setLayout(new BorderLayout());
-
-        ImageIcon imgDrone = new ImageIcon("drone.png");
-        Image newImgD = imgDrone.getImage().getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        imgDrone = new ImageIcon(newImgD);
 
         space = new JPanel();
         space.setLayout(new GridLayout(virtualizedMap.getLength(), virtualizedMap.getWidth()));
@@ -99,18 +92,20 @@ public class GamePlayView extends JFrame implements ActionListener  {
         for(int y = 1; y < squares.length; y++) {
             for(int x = 1; x < squares[1].length; x++) {
                 if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.DRONE) {
+                    String orientation = String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneOrientation());
                     JButton button = new JButton();
-                    button.setIcon(imgDrone);
+                    button.setIcon(droneIconsMap.get(orientation));
                     squares[y][x] = button;
                     squares[y][x].setText(String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
                     squares[y][x] = new JButton("");
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
-                    squares[y][x] = new JButton("+");
+                    JButton button = new JButton();
+                    button.setIcon(imgStar);
+                    squares[y][x] = button;
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
                     JButton button = new JButton();
                     button.setIcon(imgSun);
-                    button.setText("");
                     squares[y][x] = button;
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
                     squares[y][x] = new JButton("?");
@@ -126,13 +121,13 @@ public class GamePlayView extends JFrame implements ActionListener  {
         pnlProgress.setBackground(new Color(133, 185, 230));
         pnlProgress.setLayout(new GridLayout(10, 1));
 
-        JLabel lblTitle = new JLabel("--- CURRENT PROGRESS --- ");
+        JLabel lblTitle = new JLabel(progressTitle);
 
-        lblAction = new JLabel("");
+        lblProgressState = new JLabel("");
         pnlProgress.add(lblTitle);
-        pnlProgress.add(lblAction);
+        pnlProgress.add(lblProgressState);
         pnlProgress.add(simulationStatusLabel);
-        controller.setProgress(lblAction);
+        controller.setProgress(lblProgressState);
 
         add(pnlProgress, BorderLayout.WEST);
 
@@ -142,19 +137,22 @@ public class GamePlayView extends JFrame implements ActionListener  {
         pnlGameControls.setBorder(emptyBorder);
         pnlGameControls.setLayout(new GridLayout(1, 3));
 
-        btnBack = new JButton(commandStop);
-        btnBack.addActionListener(this);
-        pnlGameControls.add(btnBack);
-
-        btnBack = new JButton(commandBack);
-        btnBack.addActionListener(this);
-        pnlGameControls.add(btnBack);
-
-        btnStop = new JButton(commandNext);
+        btnStop = new JButton(commandStop);
+        btnStop.setPreferredSize(new Dimension(60, 50));
         btnStop.addActionListener(this);
         pnlGameControls.add(btnStop);
 
+        btnBack = new JButton(commandBack);
+        btnBack.setPreferredSize(new Dimension(60, 50));
+        btnBack.addActionListener(this);
+        pnlGameControls.add(btnBack);
+        btnNext = new JButton(commandNext);
+        btnNext.setPreferredSize(new Dimension(60, 50));
+        btnNext.addActionListener(this);
+        pnlGameControls.add(btnNext);
+
         btnForward = new JButton(commandForward);
+        btnForward.setPreferredSize(new Dimension(60, 50));
         btnForward.addActionListener(this);
         pnlGameControls.add(btnForward);
 
@@ -196,13 +194,12 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
     public void actionPerformed(ActionEvent event) {
         String command = event.getActionCommand();
-        System.out.println(command);
 
         // Perform next step
         if (command.equals(commandNext)) {
             try {
                 controller.nextStep();
-                controller.setProgress(lblAction);
+                controller.setProgress(lblProgressState);
                 controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -210,8 +207,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         }
         if (command.equals(commandForward)) {
             try {
-                controller.stepForward();
-                controller.renderMap(squares);
+                controller.stepForward(squares);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -219,7 +215,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         if (command.equals(commandBack)) {
             try {
                 controller.previousStep();
-                controller.setProgress(lblAction);
+                controller.setProgress(lblProgressState);
                 controller.renderMap(squares);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -67,8 +67,4 @@ public class MainMenuController {
             view.setMessage("Success!");
         }
     }
-
-    public Scenario getScenario() {
-        return fileManager.getScenario();
-    }
 }
