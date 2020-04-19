@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 
 public class GamePlayView extends JFrame implements ActionListener  {
     private String commandNext = "NEXT";
@@ -21,6 +22,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private JButton btnStop;
     private JButton btnForward;
     private JPanel pnlProgress;
+    private JPanel statProgress;
     private JPanel pnlGameControlls;
     private JPanel space;
     private GamePlayController controller;
@@ -30,6 +32,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
     private JButton[][] squares;
 
     private JLabel lblAction;
+    private JLabel statAction;
     private JLabel lblDetail;
     private JLabel lblDrone;
     private JLabel lbStatus;
@@ -87,6 +90,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
                     JButton button = new JButton();
                     button.setIcon(imgDrone);
                     squares[y][x] = button;
+                    squares[y][x].setText(String.valueOf(virtualizedMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
                     squares[y][x] = new JButton("");
                 } else if (virtualizedMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
@@ -149,6 +153,11 @@ public class GamePlayView extends JFrame implements ActionListener  {
         getContentPane().setBackground(new Color(133, 185, 230));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+    }
+
+    public void statsDisplay(Integer exploredTiles, Integer aliveDrones, Integer discoveredSuns){
+        String message = "Explored Squares: " + exploredTiles.toString() + "\n" + "Final Drones: " + aliveDrones.toString() + "\n" + "Discovered Suns: " + discoveredSuns;
+        JOptionPane.showMessageDialog(null, message, "Simulation Results", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void setSimulation(Simulation sim){

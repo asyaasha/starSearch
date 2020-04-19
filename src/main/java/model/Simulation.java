@@ -453,4 +453,32 @@ public class Simulation implements java.io.Serializable {
         }
         return count;
     }
+
+    public int countAliveDrones() {
+        int row = virtualizedMap.getSpaceLayout().length;
+        int col = virtualizedMap.getSpaceLayout()[0].length;
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (virtualizedMap.getSpaceLayout()[i][j].getStarFieldContents() == Content.DRONE) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int countDiscoveredSuns() {
+        int row = virtualizedMap.getSpaceLayout().length;
+        int col = virtualizedMap.getSpaceLayout()[0].length;
+        int count = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (virtualizedMap.getSpaceLayout()[i][j].getStarFieldContents() == Content.SUN) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }
