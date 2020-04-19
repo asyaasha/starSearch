@@ -49,7 +49,7 @@ public class MainMenuController {
             view.setMessage("Region input is out of the bound width 1-20, height 1-15");
         }
         else if (!fileManager.processDrones()){
-            view.setMessage("Drones");
+            view.setMessage("Drone inputs are incorrect");
         }
         else if (!fileManager.processSuns()){
             view.setMessage("Suns input is out of the bound");
@@ -58,7 +58,7 @@ public class MainMenuController {
             view.setMessage("Turns input is out of the bound 1-200");
         }
         else if (!isStrategyInput){
-            view.setMessage("model.Drone Strategy is incorrect, we only support 0 - random and 1 - best");
+            view.setMessage("Drone Strategy is incorrect, we only support 0 - random and 1 - best");
         }
         else if (isLocationTaken != null){
             view.setMessage("Location " + isLocationTaken + "is taken, please update the scenario");

@@ -43,6 +43,13 @@ public class LoginView extends JFrame implements ActionListener {
         btnSubmit.setPreferredSize(new Dimension(60, 50));
         btnSubmit.addActionListener((ActionListener) this);
 
+        // Icon
+        Border emptyBorderBottom = BorderFactory.createEmptyBorder(20, 70, 30, 70);
+
+        ImageIcon image = new ImageIcon("drone.png");
+        JLabel label = new JLabel("", image, JLabel.CENTER);
+        label.setBorder(emptyBorderBottom);
+
         login.add(lbEnter);
         login.add(txtUsername);
         login.add(btnSubmit);
@@ -50,8 +57,8 @@ public class LoginView extends JFrame implements ActionListener {
 
         add(login);
         add(lblDisplayMessage);
-
-        //revalidate();
+        add(label, BorderLayout.SOUTH);
+        revalidate();
 
         // Set the frame configs
         setSize(1150, 750);

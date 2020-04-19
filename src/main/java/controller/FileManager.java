@@ -67,18 +67,25 @@ public class FileManager {
 
     public Boolean processDrones() {
         nextValidLine = 2;
+        int droneNum = Integer.parseInt(data.get(nextValidLine));
+        scenario.setNumOfDrones(droneNum);
 
-        if (Integer.parseInt(data.get(nextValidLine)) > 0) {
+        if (droneNum > 0 && scenario.checkDronesNum()) {
             //We have some number of drones
-            String[] droneLocations = new String[Integer.parseInt(data.get(nextValidLine))];
+            String[] droneLocations = new String[droneNum];
 
             for (int i = 0; i < droneLocations.length; i++) {
                 int droneLocationLine = nextValidLine + i + 1; // Add one to get to next line
-                scenario.addToDronesList(data.get(droneLocationLine));
+                try {
+                    scenario.addToDronesList(data.get(droneLocationLine));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
         }
 
-        return scenario.checkDrones();
+        return scenario.checkDronesNum();
     }
 
     public Boolean processSuns() {
@@ -91,14 +98,19 @@ public class FileManager {
             nextValidLine = nextValidLine + num + 1;
         }
 
-        if (Integer.parseInt(data.get(nextValidLine)) > 0) {
+        if (num > 0 && scenario.checkSuns()) {
             //We have some number of obstacles(ONLY SUN FOR THIS PHASE OF PROJECT)
             //model.Obstacle Instruction Container
             String[] obstacleLocations = new String[Integer.parseInt(data.get(nextValidLine))];
 
             for (int i = 0; i < obstacleLocations.length; i++) {
                 int obstacleLocationLine = nextValidLine + i + 1; // Add one to get to next line
-                scenario.addToSunsList(data.get(obstacleLocationLine));
+                try {
+                    scenario.addToSunsList(data.get(obstacleLocationLine));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
         }
         data.removeAll(Arrays.asList(""));
