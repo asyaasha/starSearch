@@ -110,6 +110,23 @@ public class Database {
         return simulation;
     }
 
+    public Simulation resetSimulationState(String userId) throws Exception {
+        Document metaData = collection.find(eq(USER_FIELD, userId)).first();
+        ArrayList<String> snapshotIdList = (ArrayList<String>) metaData.get(SNAPSHOT_ID_FIELD);
+        String snapshotId = snapshotIdList.get(0);
+
+        if (snapshotIdList.size() > 1) {
+            ArrayList<String> emptiedList = new ArrayList<>();
+            emptiedList.add(snapshotId);
+            updateUserDBData(userId, emptiedList, 0);
+        }
+
+        Simulation simulation = loadDBSimulationSnapshot(snapshotId);
+        simulation.status = START_STATUS;
+
+        return simulation;
+    }
+
     public void uploadNewSimulation(String userId) throws Exception {
         String newSnapshotId = uploadStateToBucket(userId);
 

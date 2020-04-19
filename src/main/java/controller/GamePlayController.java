@@ -54,6 +54,11 @@ public class GamePlayController {
         }
     }
 
+    public void reset() throws Exception {
+        db.resetSimulationState(user);
+        System.out.println(simulation.status);
+    }
+
     public void saveAndUpload() throws Exception {
         db.saveAndUploadState(simulation, user);
     }
