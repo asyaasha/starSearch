@@ -90,8 +90,8 @@ public class MainMenuView extends JFrame implements ActionListener {
         try {
             controller.getStoredSim(username);
             btnResume.setEnabled(true);
-        } catch (Exception ex) {
-            System.out.println("USER NOT FOUND IN DB");
+        } catch (IllegalStateException ex) {
+            System.out.println("Failed to load state from user information");
         }
 
         // Add widgets to layout

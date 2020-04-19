@@ -18,7 +18,7 @@ public class MainMenuController {
         db = new Database();
     }
 
-    public void getStoredSim(String user) throws Exception {
+    public void getStoredSim(String user) throws IllegalStateException {
         Simulation sim = db.loadSimulationState(user, false);
         view.setPrevSim(sim);
     }

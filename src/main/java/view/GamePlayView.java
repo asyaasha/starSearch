@@ -231,6 +231,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
                     e.printStackTrace();
                 }
             }
+            btnBack.setEnabled(true);
         }
         if (command.equals(commandBack)) {
             try {
