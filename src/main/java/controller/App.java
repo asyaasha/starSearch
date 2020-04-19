@@ -8,13 +8,18 @@ import java.awt.*;
 // Runner
 public class App {
     public static void main(String[] args) {
-        try
-        {
-            setUIFont(new javax.swing.plaf.FontUIResource("monospaced", Font.BOLD,18));
-        }
-        catch(Exception e){}
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try
+                {
+                    setUIFont(new javax.swing.plaf.FontUIResource("monospaced", Font.BOLD,18));
+                }
+                catch(Exception e){}
 
-        new LoginView();
+                new LoginView();
+            }
+        });
     }
 
     public static void setUIFont(javax.swing.plaf.FontUIResource f)
