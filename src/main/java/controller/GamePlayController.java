@@ -78,6 +78,7 @@ public class GamePlayController {
                     squares[y][x].setIcon(view.droneIconsMap.get(orientation));
                     squares[y][x].setText(String.valueOf(simulation.getBaseMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
                 } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
+                    squares[y][x].setText("");
                     if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getExplorationStatus() == true) {
                         squares[y][x].setIcon(null);
                     } else {
@@ -85,11 +86,7 @@ public class GamePlayController {
                         if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
                             squares[y][x].setText("?");
                         }
-                        else {
-                            squares[y][x].setText("");
-                        }
                     }
-                    //squares[y][x].setText("");
                 } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
                     squares[y][x].setIcon(view.imgStar);
                     squares[y][x].setText("");
