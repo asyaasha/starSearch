@@ -90,18 +90,27 @@ public class GamePlayController {
                         squares[y][x].setIcon(null);
                     } else {
                         squares[y][x].setIcon(view.imgStar);
+                        if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
+                            squares[y][x].setText("?");
+                        }
+                        else {
+                            squares[y][x].setText("");
+                        }
                     }
-                    squares[y][x].setText("");
+                    //squares[y][x].setText("");
                 } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.STARS) {
                     squares[y][x].setIcon(view.imgStar);
                     squares[y][x].setText("");
                 } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.SUN) {
                     squares[y][x].setText("");
                     squares[y][x].setIcon(view.imgSun);
-                } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
-                    squares[y][x].setIcon(null);
-                    squares[y][x].setText("?");
                 }
+                /*
+                else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
+                    squares[y][x].setIcon(null);
+                    //squares[y][x].setText("?");
+                }
+                */
             }
         }
     }
