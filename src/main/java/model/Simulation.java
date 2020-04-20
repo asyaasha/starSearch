@@ -455,31 +455,23 @@ public class Simulation implements java.io.Serializable {
         return count;
     }
 
-    public int countAliveDrones() {
-        int row = virtualizedMap.getSpaceLayout().length;
-        int col = virtualizedMap.getSpaceLayout()[0].length;
-        int count = 0;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                if (virtualizedMap.getSpaceLayout()[i][j].getStarFieldContents() == Content.DRONE) {
-                    count++;
-                }
-            }
-        }
-        return count;
+    public String displaySummaryReport() {
+            HashMap<String, String> simulationDetails = activeCoordinator.getLogBook().exportSummaryReport(this.virtualizedMap, this.baseMap);
+            StringBuilder report = new StringBuilder();
+            report.append("SpaceRegionSize: ");
+            report.append(simulationDetails.get("SpaceRegionSize"));
+            report.append("\n");
+            report.append("TotalSafeSpace: ");
+            report.append(simulationDetails.get("TotalSafeSpace"));
+            report.append("\n");
+            report.append("ExploredSafeSpace: ");
+            report.append(simulationDetails.get("ExploredSafeSpace"));
+            report.append("\n");
+            report.append("TurnsElapsed: ");
+            report.append(simulationDetails.get("TurnsElapsed"));
+            return report.toString();
     }
 
-    public int countDiscoveredSuns() {
-        int row = virtualizedMap.getSpaceLayout().length;
-        int col = virtualizedMap.getSpaceLayout()[0].length;
-        int count = 0;
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                if (virtualizedMap.getSpaceLayout()[i][j].getStarFieldContents() == Content.SUN) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
+
+
 }

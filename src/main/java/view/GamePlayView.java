@@ -177,9 +177,8 @@ public class GamePlayView extends JFrame implements ActionListener  {
         setVisible(true);
     }
 
-    public void statsDisplay(Integer exploredTiles, Integer aliveDrones, Integer discoveredSuns){
-        String message = "Explored Squares: " + exploredTiles.toString() + "\n" + "Final Drones: " + aliveDrones.toString() + "\n" + "Discovered Suns: " + discoveredSuns;
-        JOptionPane.showMessageDialog(null, message, "Simulation Results", JOptionPane.INFORMATION_MESSAGE);
+    public void statsDisplay(String summaryReport){
+        JOptionPane.showMessageDialog(null, summaryReport, "Summary Report", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void setSimulation(Simulation sim){

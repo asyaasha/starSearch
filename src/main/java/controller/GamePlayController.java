@@ -19,9 +19,7 @@ public class GamePlayController {
     private String user;
     private GamePlayView view;
     private SpaceRegion virtualizedMap;
-    private Integer exploredTiles;
-    private Integer aliveDrones;
-    private Integer discoveredSuns;
+    private String summaryReport;
 
 
     public  GamePlayController(GamePlayView view, Database db, String user, Simulation simulation) {
@@ -45,10 +43,8 @@ public class GamePlayController {
             view.setStatusMessage(simulation.status);
         } else {
             System.out.println("ERROR: SIMULATION HAS ALREADY ENDED");
-            this.exploredTiles = simulation.countExploredTiles();
-            this.aliveDrones = simulation.countAliveDrones();
-            this.discoveredSuns = simulation.countDiscoveredSuns();
-            view.statsDisplay(exploredTiles, aliveDrones, discoveredSuns);
+            this.summaryReport = simulation.displaySummaryReport();
+            view.statsDisplay(summaryReport);
         }
     }
 
@@ -68,10 +64,8 @@ public class GamePlayController {
             simulation = db.loadSimulationState(user, false);
             view.setStatusMessage(simulation.status);
         }
-        this.exploredTiles = simulation.countExploredTiles();
-        this.aliveDrones = simulation.countAliveDrones();
-        this.discoveredSuns = simulation.countDiscoveredSuns();
-        view.statsDisplay(exploredTiles, aliveDrones, discoveredSuns);
+        this.summaryReport = simulation.displaySummaryReport();
+        view.statsDisplay(summaryReport);
     }
 
     public void reset() throws Exception {
