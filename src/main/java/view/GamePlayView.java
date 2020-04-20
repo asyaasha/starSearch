@@ -105,6 +105,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
                         squares[y][x] = new JButton("");
                     } else {
                         JButton button = new JButton();
+                        if (sim.getVirtualizedMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
+                            button.setText("?");
+                        }
                         button.setIcon(imgStar);
                         squares[y][x] = button;
                     }
@@ -116,9 +119,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
                     JButton button = new JButton();
                     button.setIcon(imgSun);
                     squares[y][x] = button;
-                } else if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.UNKNOWN) {
-                    squares[y][x] = new JButton("?");
-                }
+                } 
                 space.add(squares[y][x]);
             }
         }
