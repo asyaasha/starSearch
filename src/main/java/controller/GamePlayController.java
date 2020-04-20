@@ -54,7 +54,7 @@ public class GamePlayController {
     }
 
     public void stepForward() throws Exception {
-        simulation = db.loadSimulationState(user, false);
+        //simulation = db.loadSimulationState(user, false);
         System.out.println(simulation.status);
         while (!simulation.status.equals(END_STATUS)) {
             simulation.stepSimulation();

@@ -45,9 +45,6 @@ public class MainMenuView extends JFrame implements ActionListener {
         lblDisplayMessage = msgUtil.getMessage();
         lblDisplayMessage.setBackground(Color.magenta);
 
-        // Controller
-        controller = new MainMenuController(this);
-
         // File picker
         filePicker = new JFilePicker(strFile, strBrowse);
         filePicker.setBackground(new Color(
@@ -87,8 +84,10 @@ public class MainMenuView extends JFrame implements ActionListener {
         btnResume.setPreferredSize(new Dimension(60, 50));
         btnResume.setBackground(new Color(158, 178, 178));
 
+        // Controller
+        controller = new MainMenuController(this);
         try {
-            controller.getStoredSim(username);
+            controller.getUserSnapshotList(username);
             btnResume.setEnabled(true);
         } catch (IllegalStateException ex) {
             System.out.println("Failed to load state from user information");
@@ -144,7 +143,7 @@ public class MainMenuView extends JFrame implements ActionListener {
             if (lblDisplayMessage.getText().equals("Success!")) {
                 dispose();
                 // Play menu view 3
-                new GamePlayView(controller.getNewSimulation(filePath), controller.getDb(), username, true);
+                new GamePlayView(controller.getNewSimulation(filePath, username), controller.getDb(), username, true);
             }
         }
 

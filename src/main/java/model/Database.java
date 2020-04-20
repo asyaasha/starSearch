@@ -38,17 +38,19 @@ public class Database {
         collection =  database.getCollection(SIMULATION_METADATA_COLLECTION);
     }
 
-    public void saveAndUploadState(Simulation simulation, String userId) throws IOException {
+    public void saveAndUploadState(Simulation simulation, String userId) {
         saveStateAsFile(simulation);
         uploadStateToBucket(userId);
     }
 
-    private void saveStateAsFile(Simulation simulation) throws IOException {
-        FileOutputStream fileOut = new FileOutputStream(LOCAL_STATE_FILE_NAME);
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        out.writeObject(simulation);
-        out.close();
-        fileOut.close();
+    private void saveStateAsFile(Simulation simulation) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(LOCAL_STATE_FILE_NAME);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(simulation);
+            out.close();
+            fileOut.close();
+        } catch (IOException ignored) {}
     }
 
     private String uploadStateToBucket(String userId) {
@@ -143,7 +145,7 @@ public class Database {
         updateUserDBData(userId, newSnapshotIdList, 0);
     }
 
-    private ArrayList<String> getSnapshotIdList(String userId, boolean loadPreviousState) throws IllegalStateException {
+    public ArrayList<String> getSnapshotIdList(String userId, boolean loadPreviousState) throws IllegalStateException {
         Document metaData = collection.find(eq(USER_FIELD, userId)).first();
 
         if (metaData == null) {

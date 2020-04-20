@@ -6,6 +6,7 @@ import model.Simulation;
 import view.MainMenuView;
 import view.Scenario;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainMenuController {
@@ -18,17 +19,23 @@ public class MainMenuController {
         db = new Database();
     }
 
+    public ArrayList<String> getUserSnapshotList(String user) throws IllegalStateException {
+        return db.getSnapshotIdList(user, false);
+    }
+
     public void getStoredSim(String user) throws IllegalStateException {
         Simulation sim = db.loadSimulationState(user, false);
         view.setPrevSim(sim);
     }
 
-    public Simulation getNewSimulation(String filename) {
+    public Simulation getNewSimulation(String filename, String username) {
         FileParser fileParser = new FileParser(filename);
         fileParser.generateInstructions();
 
         HashMap<String, String[]> globalInstructionSet = fileParser.getInstructionSet();
-        return new Simulation(globalInstructionSet);
+        Simulation simulation = new Simulation(globalInstructionSet);
+        db.saveAndUploadState(simulation, username);
+        return simulation;
     }
 
     public Database getDb(){
