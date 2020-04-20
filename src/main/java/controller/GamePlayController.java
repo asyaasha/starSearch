@@ -25,7 +25,7 @@ public class GamePlayController {
         this.user = user;
         this.view = view;
         this.simulation = simulation;
-        this.simulation.visualizeVirtualizedMap();
+        //this.simulation.visualizeVirtualizedMap();
         this.virtualizedMap = simulation.getVirtualizedMap();
 
         this.initialize();

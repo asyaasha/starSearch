@@ -395,8 +395,7 @@ public class Simulation implements java.io.Serializable {
     public void visualizeVirtualizedMap() {
         int row = virtualizedMap.getSpaceLayout().length;
         int col = virtualizedMap.getSpaceLayout()[0].length;
-        System.out.println(row);
-        System.out.println(col);
+
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 if (virtualizedMap.getSpaceLayout()[i][j].getStarFieldContents() == Content.BARRIER) {
