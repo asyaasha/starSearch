@@ -59,9 +59,14 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
     public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
-    public GamePlayView(Simulation sim, Database db, String user) {
+    public GamePlayView(Simulation sim, Database db, String user, boolean newSimulation) {
         super("Start Search");
         controller = new GamePlayController(this, db, user, sim);
+
+        if (newSimulation) {
+            controller.initialize();
+        }
+
         this.baseMap = sim.getBaseMap();
 
         this.sim = sim;
@@ -101,7 +106,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
                     squares[y][x] = button;
                     squares[y][x].setText(String.valueOf(baseMap.getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
                 } else if (baseMap.getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
-                    if (sim.getVirtualizedMap().getSpaceLayout()[y][x].getExplorationStatus() == true) {
+                    if (sim.getVirtualizedMap().getSpaceLayout()[y][x].getExplorationStatus()) {
                         squares[y][x] = new JButton("");
                     } else {
                         JButton button = new JButton();
@@ -186,19 +191,19 @@ public class GamePlayView extends JFrame implements ActionListener  {
     }
 
     public void resizeIcons() {
-        imgSun = new ImageIcon(imgProcesser(imgSun));
-        imgDroneN = new ImageIcon(imgProcesser(imgDroneN));
-        imgDroneE = new ImageIcon(imgProcesser(imgDroneE));
-        imgDroneW = new ImageIcon(imgProcesser(imgDroneW));
-        imgDroneS = new ImageIcon(imgProcesser(imgDroneS));
-        imgDroneSE = new ImageIcon( imgProcesser(imgDroneSE));
-        imgDroneSW = new ImageIcon(imgProcesser(imgDroneSW));
-        imgDroneNE = new ImageIcon(imgProcesser(imgDroneNE));
-        imgDroneNW = new ImageIcon(imgProcesser(imgDroneNW));
-        imgStar = new ImageIcon( imgProcesser(imgStar));
+        imgSun = new ImageIcon(imgProcessor(imgSun));
+        imgDroneN = new ImageIcon(imgProcessor(imgDroneN));
+        imgDroneE = new ImageIcon(imgProcessor(imgDroneE));
+        imgDroneW = new ImageIcon(imgProcessor(imgDroneW));
+        imgDroneS = new ImageIcon(imgProcessor(imgDroneS));
+        imgDroneSE = new ImageIcon( imgProcessor(imgDroneSE));
+        imgDroneSW = new ImageIcon(imgProcessor(imgDroneSW));
+        imgDroneNE = new ImageIcon(imgProcessor(imgDroneNE));
+        imgDroneNW = new ImageIcon(imgProcessor(imgDroneNW));
+        imgStar = new ImageIcon( imgProcessor(imgStar));
     }
 
-    public Image imgProcesser(ImageIcon currImage){
+    public Image imgProcessor(ImageIcon currImage){
         return currImage.getImage().getScaledInstance(40, 40,  java.awt.Image.SCALE_SMOOTH);
     }
 
@@ -215,8 +220,8 @@ public class GamePlayView extends JFrame implements ActionListener  {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        if (command.equals(commandForward)) {
+
+        } else if (command.equals(commandForward)) {
             btnBack.setEnabled(false);
             btnNext.setEnabled(false);
 
@@ -229,18 +234,14 @@ public class GamePlayView extends JFrame implements ActionListener  {
             }
 
             btnBack.setEnabled(true);
-        }
-        if (command.equals(commandBack)) {
-            try {
-                controller.previousStep();
-                controller.setProgress(lblProgressState);
-                controller.renderMap(squares);
-                btnNext.setEnabled(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (command.equals(commandStop)) {
+
+        } else if (command.equals(commandBack)) {
+            controller.previousStep();
+            controller.setProgress(lblProgressState);
+            controller.renderMap(squares);
+            btnNext.setEnabled(true);
+
+        } else if (command.equals(commandStop)) {
             //save state and upload
             try {
                 controller.saveAndUpload();

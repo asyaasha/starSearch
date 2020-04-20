@@ -13,21 +13,24 @@ import static model.Simulation.END_STATUS;
 
 public class GamePlayController {
     private Simulation simulation;
-    private Database db;
-    private String user;
-    private GamePlayView view;
-    private SpaceRegion virtualizedMap;
+    private final Database db;
+    private final String user;
+    private final GamePlayView view;
+    private final SpaceRegion virtualizedMap;
     private String summaryReport;
     private FileParser fileParser = new FileParser("exported");
-
 
     public  GamePlayController(GamePlayView view, Database db, String user, Simulation simulation) {
         this.db = db;
         this.user = user;
         this.view = view;
         this.simulation = simulation;
-        this.simulation.visualizeVirtualizedMap();
+        //this.simulation.visualizeVirtualizedMap();
         this.virtualizedMap = simulation.getVirtualizedMap();
+    }
+
+    public void initialize() {
+        db.uploadNewSimulation(user);
     }
 
     public void nextStep() throws Exception {
@@ -45,7 +48,7 @@ public class GamePlayController {
         }
     }
 
-    public void previousStep() throws Exception {
+    public void previousStep() {
         simulation = db.loadSimulationState(user, true);
         view.setStatusMessage(simulation.status);
     }
@@ -83,7 +86,7 @@ public class GamePlayController {
                     squares[y][x].setText(String.valueOf(simulation.getBaseMap().getSpaceLayout()[y][x].getOccupantDrone().getDroneID()));
                 } else if (simulation.getBaseMap().getSpaceLayout()[y][x].getStarFieldContents() == Content.EMPTY) {
                     squares[y][x].setText("");
-                    if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getExplorationStatus() == true) {
+                    if (simulation.getVirtualizedMap().getSpaceLayout()[y][x].getExplorationStatus()) {
                         squares[y][x].setIcon(null);
                     } else {
                         squares[y][x].setIcon(view.imgStar);
