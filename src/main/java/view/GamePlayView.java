@@ -3,6 +3,7 @@ package view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
@@ -45,23 +46,21 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
     private final JLabel lblProgressState;
 
-    public ImageIcon imgSun = new ImageIcon("sun.png");
-    public ImageIcon imgDroneN = new ImageIcon("drone_N.png");
-    public ImageIcon imgDroneE = new ImageIcon("drone_E.png");
-    public ImageIcon imgDroneW = new ImageIcon("drone_W.png");
-    public ImageIcon imgDroneNE = new ImageIcon("drone_NE.png");
-    public ImageIcon imgDroneNW = new ImageIcon("drone_NW.png");
-    public ImageIcon imgDroneSE = new ImageIcon("drone_SE.png");
-    public ImageIcon imgDroneSW = new ImageIcon("drone_SW.png");
-    public ImageIcon imgDroneS = new ImageIcon("drone_S.png");
-    public ImageIcon imgStar = new ImageIcon("star1.png");
-    public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
+    public ImageIcon imgSun = new ImageIcon(getImageFilePath("sun.png"));
+    public ImageIcon imgDroneN = new ImageIcon(getImageFilePath("drone_N.png"));
+    public ImageIcon imgDroneE = new ImageIcon(getImageFilePath("drone_E.png"));
+    public ImageIcon imgDroneW = new ImageIcon(getImageFilePath("drone_W.png"));
+    public ImageIcon imgDroneNE = new ImageIcon(getImageFilePath("drone_NE.png"));
+    public ImageIcon imgDroneNW = new ImageIcon(getImageFilePath("drone_NW.png"));
+    public ImageIcon imgDroneSE = new ImageIcon(getImageFilePath("drone_SE.png"));
+    public ImageIcon imgDroneSW = new ImageIcon(getImageFilePath("drone_SW.png"));
+    public ImageIcon imgDroneS = new ImageIcon(getImageFilePath("drone_S.png"));
+    public ImageIcon imgStar = new ImageIcon(getImageFilePath("star.png"));
 
-    private int count;
+    public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
     public GamePlayView(Simulation sim, Database db, String user) {
         super("Start Search");
-        count = 0;
         controller = new GamePlayController(this, db, user, sim);
         this.baseMap = sim.getBaseMap();
 
@@ -132,7 +131,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         pnlProgress = new JPanel();
         pnlProgress.setBorder(emptyBorder);
         pnlProgress.setBackground(new Color(133, 185, 230));
-        pnlProgress.setLayout(new GridLayout(10, 1));
+        pnlProgress.setLayout(new GridLayout(3, 1));
 
         JLabel lblTitle = new JLabel(progressTitle);
 
@@ -211,9 +210,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         // Perform next step
         if (command.equals(commandNext)) {
             btnBack.setEnabled(true);
-
             try {
-                count ++;
                 controller.nextStep();
                 controller.setProgress(lblProgressState);
                 controller.renderMap(squares);
@@ -225,24 +222,22 @@ public class GamePlayView extends JFrame implements ActionListener  {
             btnBack.setEnabled(false);
             btnNext.setEnabled(false);
 
-            if (!btnBack.isEnabled() && !btnNext.isEnabled()) {
-                try {
-                    controller.stepForward(squares, btnForward);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            btnForward.setEnabled(false);
+            try {
+                controller.stepForward();
+                controller.renderMap(squares);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            btnBack.setEnabled(true);
         }
         if (command.equals(commandBack)) {
             try {
-                count --;
-                if (count == 0) {
-                    btnBack.setEnabled(false);
-                } else {
-                    controller.previousStep();
-                    controller.setProgress(lblProgressState);
-                    controller.renderMap(squares);
-                }
+                controller.previousStep();
+                controller.setProgress(lblProgressState);
+                controller.renderMap(squares);
+                btnNext.setEnabled(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -271,5 +266,9 @@ public class GamePlayView extends JFrame implements ActionListener  {
         } else {
             simulationStatusLabel.setText("");
         }
+    }
+
+    public String getImageFilePath(String imageName) {
+        return String.join(File.separator, "resources", "images", imageName);
     }
 }
