@@ -51,22 +51,27 @@ public class Database {
         fileOut.close();
     }
 
-    private String uploadStateToBucket(String userId) throws FileNotFoundException {
-        InputStream streamToUploadFrom = new FileInputStream(new File(LOCAL_STATE_FILE_NAME));
+    private String uploadStateToBucket(String userId) {
 
-        GridFSUploadOptions options = new GridFSUploadOptions()
-            .chunkSizeBytes(UPLOAD_SIZE)
-            .metadata(new Document("type", "presentation"));
+        String snapshotId = "";
 
-        String snapshotFileName = userId + "_snapshot";
+        try {
+            InputStream streamToUploadFrom = new FileInputStream(new File(LOCAL_STATE_FILE_NAME));
 
-        ObjectId uploadedState = gridFSBucket.uploadFromStream(snapshotFileName, streamToUploadFrom, options);
+            GridFSUploadOptions options = new GridFSUploadOptions()
+                .chunkSizeBytes(UPLOAD_SIZE)
+                .metadata(new Document("type", "presentation"));
 
-        String snapshotId = uploadedState.toHexString();
+            String snapshotFileName = userId + "_snapshot";
 
-        System.out.println("The id of the uploaded file is: " + snapshotId);
+            ObjectId uploadedState = gridFSBucket.uploadFromStream(snapshotFileName, streamToUploadFrom, options);
 
-        uploadSnapshotToMetadata(userId, snapshotId);
+            snapshotId = uploadedState.toHexString();
+
+            System.out.println("The id of the uploaded file is: " + snapshotId);
+            uploadSnapshotToMetadata(userId, snapshotId);
+
+        } catch (FileNotFoundException ignore) {}
 
         return snapshotId;
     }
@@ -127,7 +132,7 @@ public class Database {
         return simulation;
     }
 
-    public void uploadNewSimulation(String userId) throws FileNotFoundException {
+    public void uploadNewSimulation(String userId) {
         String newSnapshotId = uploadStateToBucket(userId);
 
         System.out.println(String.format("New simulation: snapshotId = %s", newSnapshotId));
