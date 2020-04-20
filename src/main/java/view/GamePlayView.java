@@ -59,11 +59,8 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
     public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
-    private int count;
-
     public GamePlayView(Simulation sim, Database db, String user) {
         super("Start Search");
-        count = 0;
         controller = new GamePlayController(this, db, user, sim);
         this.baseMap = sim.getBaseMap();
 
@@ -131,7 +128,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         pnlProgress = new JPanel();
         pnlProgress.setBorder(emptyBorder);
         pnlProgress.setBackground(new Color(133, 185, 230));
-        pnlProgress.setLayout(new GridLayout(10, 1));
+        pnlProgress.setLayout(new GridLayout(3, 1));
 
         JLabel lblTitle = new JLabel(progressTitle);
 
@@ -210,9 +207,7 @@ public class GamePlayView extends JFrame implements ActionListener  {
         // Perform next step
         if (command.equals(commandNext)) {
             btnBack.setEnabled(true);
-
             try {
-                count ++;
                 controller.nextStep();
                 controller.setProgress(lblProgressState);
                 controller.renderMap(squares);
@@ -224,25 +219,22 @@ public class GamePlayView extends JFrame implements ActionListener  {
             btnBack.setEnabled(false);
             btnNext.setEnabled(false);
 
-            if (!btnBack.isEnabled() && !btnNext.isEnabled()) {
-                try {
-                    controller.stepForward(squares, btnForward);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            btnForward.setEnabled(false);
+            try {
+                controller.stepForward();
+                controller.renderMap(squares);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             btnBack.setEnabled(true);
         }
         if (command.equals(commandBack)) {
             try {
-                count --;
-                if (count == 0) {
-                    btnBack.setEnabled(false);
-                } else {
-                    controller.previousStep();
-                    controller.setProgress(lblProgressState);
-                    controller.renderMap(squares);
-                }
+                controller.previousStep();
+                controller.setProgress(lblProgressState);
+                controller.renderMap(squares);
+                btnNext.setEnabled(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }

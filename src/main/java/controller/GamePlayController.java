@@ -47,13 +47,11 @@ public class GamePlayController {
         view.setStatusMessage(simulation.status);
     }
 
-    public void stepForward(JButton[][] squares, JButton forward) throws Exception {
-        forward.setEnabled(false);
+    public void stepForward() throws Exception {
         simulation = db.loadSimulationState(user, false);
         System.out.println(simulation.status);
         while (!simulation.status.equals(END_STATUS)) {
             simulation.stepSimulation();
-            renderMap(squares);
             db.saveAndUploadState(simulation, user);
             simulation = db.loadSimulationState(user, false);
             view.setStatusMessage(simulation.status);
