@@ -133,7 +133,7 @@ public class FileParser {
      * @param logInfo
      */
     public void writeToFile(ArrayList<String> logInfo) {
-        /*try {
+        try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.substring(0, filePath.length() - 4) + "_results.csv"));
             for (String line:logInfo) {
                 writer.write(line);
@@ -142,9 +142,6 @@ public class FileParser {
             writer.close();
         } catch (Exception e) {
             System.out.println("Something went horribly wrong :).");
-        }*/
-        for (String line:logInfo) {
-            System.out.println(line);
         }
     }
 }

@@ -7,6 +7,7 @@ import model.Database;
 import model.Simulation;
 import model.SpaceRegion;
 import view.GamePlayView;
+import model.FileParser;
 
 import static model.Simulation.END_STATUS;
 
@@ -17,6 +18,7 @@ public class GamePlayController {
     private GamePlayView view;
     private SpaceRegion virtualizedMap;
     private String summaryReport;
+    private FileParser fileParser = new FileParser("exported");
 
 
     public  GamePlayController(GamePlayView view, Database db, String user, Simulation simulation) {
@@ -37,6 +39,7 @@ public class GamePlayController {
             view.setStatusMessage(simulation.status);
         } else {
             System.out.println("ERROR: SIMULATION HAS ALREADY ENDED");
+            fileParser.writeToFile(simulation.endSimulation());
             this.summaryReport = simulation.displaySummaryReport();
             view.statsDisplay(summaryReport);
         }
@@ -56,6 +59,7 @@ public class GamePlayController {
             simulation = db.loadSimulationState(user, false);
             view.setStatusMessage(simulation.status);
         }
+        fileParser.writeToFile(simulation.endSimulation());
         this.summaryReport = simulation.displaySummaryReport();
         view.statsDisplay(summaryReport);
     }
