@@ -8,8 +8,6 @@ import model.Simulation;
 import model.SpaceRegion;
 import view.GamePlayView;
 
-import java.io.FileNotFoundException;
-
 import static model.Simulation.END_STATUS;
 
 public class GamePlayController {
@@ -27,11 +25,9 @@ public class GamePlayController {
         this.simulation = simulation;
         //this.simulation.visualizeVirtualizedMap();
         this.virtualizedMap = simulation.getVirtualizedMap();
-
-        this.initialize();
     }
 
-    private void initialize() {
+    public void initialize() {
         db.uploadNewSimulation(user);
     }
 

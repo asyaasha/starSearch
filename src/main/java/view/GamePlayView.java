@@ -59,9 +59,14 @@ public class GamePlayView extends JFrame implements ActionListener  {
 
     public HashMap<String,ImageIcon> droneIconsMap = new HashMap<>();
 
-    public GamePlayView(Simulation sim, Database db, String user) {
+    public GamePlayView(Simulation sim, Database db, String user, boolean newSimulation) {
         super("Start Search");
         controller = new GamePlayController(this, db, user, sim);
+
+        if (newSimulation) {
+            controller.initialize();
+        }
+
         this.baseMap = sim.getBaseMap();
 
         this.sim = sim;

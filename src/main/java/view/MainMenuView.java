@@ -130,7 +130,7 @@ public class MainMenuView extends JFrame implements ActionListener {
             try {
                 controller.getStoredSim(username);
                 dispose();
-                new GamePlayView(prevSim, controller.getDb(), username);
+                new GamePlayView(prevSim, controller.getDb(), username, false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -144,7 +144,7 @@ public class MainMenuView extends JFrame implements ActionListener {
             if (lblDisplayMessage.getText().equals("Success!")) {
                 dispose();
                 // Play menu view 3
-                new GamePlayView(controller.getNewSimulation(filePath), controller.getDb(), username);
+                new GamePlayView(controller.getNewSimulation(filePath), controller.getDb(), username, true);
             }
         }
 
