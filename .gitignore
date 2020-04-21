@@ -1,6 +1,15 @@
+#Project Structure Metadata
 /.idea
+*.iml
+/resources/.DS_Store
+/resources/images/.DS_Store
+
+#Build Output
 /out
 /target
-*.iml
+
+#Local State Store
 /serialization.ser
+
+#Log Output
 /expo_results.csv
