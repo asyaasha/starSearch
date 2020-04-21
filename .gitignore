@@ -3,3 +3,4 @@
 /target
 *.iml
 /serialization.ser
+/expo_results.csv
